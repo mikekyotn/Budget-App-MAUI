@@ -15,11 +15,7 @@ namespace Budget_App_MAUI.ViewModel
         [ObservableProperty]
         string title;
 
-        [ObservableProperty]
-        [NotifyPropertyChangedFor(nameof(IsNotBusy))] // will tell IsNotBusy when isBusy changes
-        bool isBusy;
-
-        public bool IsNotBusy => !isBusy;
+        
         public BaseViewModel()
         {
 

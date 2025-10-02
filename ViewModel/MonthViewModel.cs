@@ -1,19 +1,52 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Budget_App_MAUI.Models;
+using Budget_App_MAUI.Data;
+using Microsoft.EntityFrameworkCore;
 
 namespace Budget_App_MAUI.ViewModel
 {
     public partial class MonthViewModel:BaseViewModel
     {
-        public MonthViewModel()
+        //Create the context to use for accessing the db
+        private TransactionDataContext _transactionDataContext;
+        //Make an observable collection to put on frontend and is responsive to changes
+        
+        public ObservableCollection<Transaction> Transactions { get; set; } = new ObservableCollection<Transaction>();
+
+        public MonthViewModel(TransactionDataContext dataContext)
         {
+            Title = "Monthly Budget View";
+            _transactionDataContext = dataContext;
+            //Transactions = new ObservableCollection<Transaction>();
+            
+        }
+
+        //Get the filtered transaction data for the month from the db into a variable
+        //Add each transaction into the Observable Collection-Transactions using foreach .Add
+        private async void LoadTransactionsByMonth(TransactMonth month)
+        {
+            try
+            {
+                await _transactionDataContext.Database.EnsureCreatedAsync();
+                //List<Transaction> transactions = new List<Transaction>();
+                var thisMonthTransactions = await _transactionDataContext.Transactions.Where
+                (t => t.Month == month).OrderBy(t => t.DayOfMonthDue).ToListAsync();
+                foreach (var transaction in thisMonthTransactions)
+                {
+                    Transactions.Add(transaction);
+                }
+            }
+            catch (Exception ex)
+            {
+                await Shell.Current.DisplayAlert("Error Loading Transactions", ex.Message, "OK");
+            }
 
         }
-        [ObservableProperty]
-
     }
 }

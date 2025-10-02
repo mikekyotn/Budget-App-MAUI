@@ -1,17 +1,18 @@
-﻿namespace Budget_App_MAUI
+﻿using Budget_App_MAUI.ViewModel;
+
+namespace Budget_App_MAUI
 {
     public partial class MainPage : ContentPage
     {
       
 
-        public MainPage()
+        public MainPage(MonthViewModel vm)
         {
             InitializeComponent();
+            BindingContext = vm;
+
         }
 
-        private void OnCounterClicked(object? sender, EventArgs e)
-        {
-            
-        }
+        
     }
 }

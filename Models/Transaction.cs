@@ -10,7 +10,7 @@ namespace Budget_App_MAUI.Models
 {
     public class Transaction
     {
-        [Key]
+        //[Key]
         public Guid Id { get; set; }
         public string Type { get; set; }
         public int DayOfMonthDue { get; set; }
@@ -19,6 +19,8 @@ namespace Budget_App_MAUI.Models
         public string Category { get; set; }
         public string Comments { get; set; }        
         public bool IsPaid { get; set; }
+        public decimal PaymentEstimated { get; set; }
+        public decimal PaymentActual { get; set; }
 
     }
     public enum TransactMonth

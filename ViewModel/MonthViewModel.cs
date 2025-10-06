@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Budget_App_MAUI.Models;
 using Budget_App_MAUI.Data;
 using Microsoft.EntityFrameworkCore;
+using CommunityToolkit.Mvvm.Input;
 
 namespace Budget_App_MAUI.ViewModel
 {
@@ -16,15 +17,15 @@ namespace Budget_App_MAUI.ViewModel
         //Create the context to use for accessing the db
         private TransactionDataContext _transactionDataContext;
         //Make an observable collection to put on frontend and is responsive to changes
-        
         public ObservableCollection<Transaction> Transactions { get; set; } = new ObservableCollection<Transaction>();
 
         public MonthViewModel(TransactionDataContext dataContext)
         {
             Title = "Monthly Budget View";
             _transactionDataContext = dataContext;
-            //Transactions = new ObservableCollection<Transaction>();
-            
+
+            //NEED TO UPDATE THIS ARGUMENT TO RESPOND TO USER SELECTION OF MONTH
+            LoadTransactionsByMonth(TransactMonth.January);            
         }
 
         //Get the filtered transaction data for the month from the db into a variable
@@ -34,9 +35,11 @@ namespace Budget_App_MAUI.ViewModel
             try
             {
                 await _transactionDataContext.Database.EnsureCreatedAsync();
-                //List<Transaction> transactions = new List<Transaction>();
+                
+                //filtering only the month needed from the db into a list
                 var thisMonthTransactions = await _transactionDataContext.Transactions.Where
-                (t => t.Month == month).OrderBy(t => t.DayOfMonthDue).ToListAsync();
+                (t => t.Month == month).OrderBy(t => t.DayOfMonthDue).ToListAsync(); 
+                
                 foreach (var transaction in thisMonthTransactions)
                 {
                     Transactions.Add(transaction);
@@ -47,6 +50,17 @@ namespace Budget_App_MAUI.ViewModel
                 await Shell.Current.DisplayAlert("Error Loading Transactions", ex.Message, "OK");
             }
 
+        }
+
+        [RelayCommand]
+        async Task GoToDetailsAsync(Transaction transaction)
+        {
+            if (transaction == null) { return; }
+            //await Shell.Current.GoToAsync(nameof(DetailsPage), true, new Dictionary<string, object>
+            //{
+            //    { "Transaction", transaction }
+            //});
+            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?transactionId={transaction.Id}");
         }
     }
 }

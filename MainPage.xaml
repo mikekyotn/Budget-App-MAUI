@@ -7,8 +7,32 @@
              x:DataType="viewmodel:MonthViewModel"
              Title="{Binding Title}">
 
-    <Grid ColumnDefinitions="Auto, Auto, Auto" ColumnSpacing="5">
-        
-    </Grid>
+    <ScrollView>
+        <CollectionView ItemsSource="{Binding Transactions}" SelectionMode="None">
+            <CollectionView.EmptyView>
+                <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
+                    <Image Source="dotnet_bot.png" HorizontalOptions="CenterAndExpand" VerticalOptions="CenterAndExpand" Aspect="AspectFill"/>
+                </StackLayout>
+            </CollectionView.EmptyView>
+            <CollectionView.ItemTemplate>
+                <DataTemplate x:DataType="models:Transaction">
+                    <Grid Padding="10">
+                        <Frame HeightRequest="50" Padding="0">
+                            <Frame.GestureRecognizers>
+                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                                                      Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MonthViewModel}}, Path=GoToDetailsCommand}"/>
+                            </Frame.GestureRecognizers>                                               
+                        <Grid ColumnDefinitions="Auto, 125, Auto, Auto" ColumnSpacing="5" Padding="0" HeightRequest="50">
+                            <Label Grid.Column="0" Text="{Binding DayOfMonthDue}" VerticalOptions="Center"/>
+                            <Label Grid.Column="1" Text="{Binding Description}" VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="{Binding PaymentEstimated}" VerticalOptions="Center"/>
+                            <Label Grid.Column="3" Text="{Binding PaymentActual}" VerticalOptions="Center"/>
+                        </Grid>
+                        </Frame>
+                    </Grid>
+                </DataTemplate>
+            </CollectionView.ItemTemplate>
+        </CollectionView>
+    </ScrollView>
 
 </ContentPage>

@@ -56,10 +56,7 @@ namespace Budget_App_MAUI.ViewModel
         async Task GoToDetailsAsync(Transaction transaction)
         {
             if (transaction == null) { return; }
-            //await Shell.Current.GoToAsync(nameof(DetailsPage), true, new Dictionary<string, object>
-            //{
-            //    { "Transaction", transaction }
-            //});
+            //send the transactionId which is the Guid to the DetailsViewModel using query (?) property
             await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?transactionId={transaction.Id}");
         }
     }

@@ -22,11 +22,12 @@
                                 <TapGestureRecognizer CommandParameter="{Binding .}"
                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MonthViewModel}}, Path=GoToDetailsCommand}"/>
                             </Frame.GestureRecognizers>                                               
-                        <Grid ColumnDefinitions="Auto, 125, Auto, Auto" ColumnSpacing="5" Padding="0" HeightRequest="50">
-                            <Label Grid.Column="0" Text="{Binding DayOfMonthDue}" VerticalOptions="Center"/>
-                            <Label Grid.Column="1" Text="{Binding Description}" VerticalOptions="Center"/>
-                            <Label Grid.Column="2" Text="{Binding PaymentEstimated}" VerticalOptions="Center"/>
-                            <Label Grid.Column="3" Text="{Binding PaymentActual}" VerticalOptions="Center"/>
+                        <Grid ColumnDefinitions="30, 200, 100, 100" ColumnSpacing="10" Padding="0" HeightRequest="50">
+                            <Label Grid.Column="0" Text="{Binding DayOfMonthDue}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+                            <Label Grid.Column="1" Text="{Binding Description}" HorizontalTextAlignment="End" VerticalOptions="Center"/>
+                            <Label Grid.Column="2" Text="{Binding PaymentEstimated}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+                            <Label Grid.Column="3" Text="{Binding PaymentActual}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+                           
                         </Grid>
                         </Frame>
                     </Grid>

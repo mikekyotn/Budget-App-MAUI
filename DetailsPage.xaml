@@ -4,11 +4,39 @@
              x:Class="Budget_App_MAUI.DetailsPage"
              xmlns:viewmodel="clr-namespace:Budget_App_MAUI.ViewModel"
              x:DataType="viewmodel:DetailsViewModel"
-             Title="{Binding Transaction.Description}">
+             Title="{Binding Title}">
     <ScrollView>
-        <VerticalStackLayout>
-            <Label Text="{Binding Transaction.DayOfMonthDue}"/>
-            <Label Text="{Binding Transaction.PaymentEstimated}"/>
-        </VerticalStackLayout>
+        <Grid ColumnDefinitions="150,Auto,Auto" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+              HorizontalOptions="Center" VerticalOptions="Center">
+            <Label Grid.Row="0" Grid.Column="0" Text="Month"/>
+            <Label Grid.Row="0" Grid.Column="1" Text="{Binding Transaction.Month}"/>
+            <Label Grid.Row="1" Grid.Column="0" Text="Day Due"/>
+            <Label Grid.Row="1" Grid.Column="1" Text="{Binding Transaction.DayOfMonthDue}"/>
+            <Label Grid.Row="2" Grid.Column="0" Text="Type"/>
+            <Label Grid.Row="2" Grid.Column="1" Text="{Binding Transaction.Type}"/>
+            <Label Grid.Row="3" Grid.Column="0" Text="Description"/>
+            <Label Grid.Row="3" Grid.Column="1" Text="{Binding Transaction.Description}"/>
+            <Label Grid.Row="4" Grid.Column="0" Text="Category"/>
+            <Label Grid.Row="4" Grid.Column="1" Text="{Binding Transaction.Category}"/>
+            <Label Grid.Row="5" Grid.Column="0" Text="Comments"/>
+            <Label Grid.Row="5" Grid.Column="1" Text="{Binding Transaction.Comments}"/>
+            <Label Grid.Row="6" Grid.Column="0" Text="Budgeted Amount"/>
+            <Label Grid.Row="6" Grid.Column="1" Text="{Binding Transaction.PaymentEstimated}"/>
+            <Label Grid.Row="7" Grid.Column="0" Text="Actual Amount"/>
+            <Label Grid.Row="7" Grid.Column="1" Text="{Binding Transaction.PaymentActual}"/>
+            <Label Grid.Row="8" Grid.Column="0" Text="Is Paid?"/>
+            <Label Grid.Row="8" Grid.Column="1" Text="{Binding Transaction.IsPaid}"/>
+        </Grid>
     </ScrollView>
 </ContentPage>
+
+<!--public Guid Id { get; set; }
+public string Type { get; set; }
+public int DayOfMonthDue { get; set; }
+public TransactMonth Month { get; set; }
+public string Description { get; set; }
+public string Category { get; set; }
+public string Comments { get; set; }        
+public bool IsPaid { get; set; }
+public decimal PaymentEstimated { get; set; }
+public decimal PaymentActual { get; set; }-->

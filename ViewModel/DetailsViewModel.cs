@@ -12,8 +12,8 @@ using System.Transactions;
 
 namespace Budget_App_MAUI.ViewModel
 {
-    //[QueryProperty("Transaction", "Transaction")]
-    [QueryProperty(nameof(transactionId), "transactionId")]
+    //This is receiveing the transactionId from the MonthViewModel when a transaction is selected
+    [QueryProperty(nameof(TransactionId), "transactionId")]
     public partial class DetailsViewModel:BaseViewModel
     {
         private TransactionDataContext _dataContext;

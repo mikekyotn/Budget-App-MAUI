@@ -12,6 +12,6 @@ namespace Budget_App_MAUI
             BindingContext = vm;
 
         }
-                
+
     }
 }

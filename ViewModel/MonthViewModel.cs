@@ -9,6 +9,8 @@ using Budget_App_MAUI.Models;
 using Budget_App_MAUI.Data;
 using Microsoft.EntityFrameworkCore;
 using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Budget_App_MAUI.Messages;
 
 namespace Budget_App_MAUI.ViewModel
 {
@@ -23,14 +25,19 @@ namespace Budget_App_MAUI.ViewModel
         {
             Title = "Monthly Budget View";
             _transactionDataContext = dataContext;
-
+            
+            WeakReferenceMessenger.Default.Register<TransactionUpdatedMessage>(this, (r, m) =>
+            {
+                LoadTransactionsByMonthAsync(TransactMonth.January); //NEED TO UPDATE THIS ARGUMENT TO RESPOND TO USER SELECTION OF MONTH
+            });
             //NEED TO UPDATE THIS ARGUMENT TO RESPOND TO USER SELECTION OF MONTH
-            LoadTransactionsByMonth(TransactMonth.January);            
+            LoadTransactionsByMonthAsync(TransactMonth.January);            
         }
 
         //Get the filtered transaction data for the month from the db into a variable
         //Add each transaction into the Observable Collection-Transactions using foreach .Add
-        private async void LoadTransactionsByMonth(TransactMonth month)
+        [RelayCommand]
+        private async void LoadTransactionsByMonthAsync(TransactMonth month)
         {
             try
             {
@@ -39,7 +46,7 @@ namespace Budget_App_MAUI.ViewModel
                 //filtering only the month needed from the db into a list
                 var thisMonthTransactions = await _transactionDataContext.Transactions.Where
                 (t => t.Month == month).OrderBy(t => t.DayOfMonthDue).ToListAsync(); 
-                
+                Transactions.Clear();
                 foreach (var transaction in thisMonthTransactions)
                 {
                     Transactions.Add(transaction);

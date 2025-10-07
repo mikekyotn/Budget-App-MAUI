@@ -25,7 +25,14 @@ namespace Budget_App_MAUI.ViewModel
             _paymentDataContext = dataContext;
                        
             //NEED TO UPDATE THIS ARGUMENT TO RESPOND TO USER SELECTION OF MONTH
-            LoadPaymentsByMonthAsync(TransactMonth.January);            
+            LoadPaymentsByMonthAsync(TransactMonth.January);
+
+            WeakReferenceMessenger.Default.Register<TransactionUpdatedMessage>(this, (recipient, message) =>
+            {
+                PaymentList.Clear();
+                LoadPaymentsByMonthAsync(message.Value);
+            });
+
         }
 
         //Get the filtered transaction data for the month from the db into a variable

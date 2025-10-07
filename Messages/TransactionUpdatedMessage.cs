@@ -9,7 +9,7 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 namespace Budget_App_MAUI.Messages
 {
     //THIS IS NOT USED UNLESS I NEED TO USE WEAK REFERENCE MESSAGING
-    class TransactionUpdatedMessage :ValueChangedMessage<TransactMonth>
+    public class TransactionUpdatedMessage:ValueChangedMessage<TransactMonth>
     {
         public TransactionUpdatedMessage(TransactMonth month) : base(month)
         {

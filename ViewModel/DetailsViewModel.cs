@@ -58,17 +58,8 @@ namespace Budget_App_MAUI.ViewModel
             {
                 _dataContext.Payments.Update(payment);
                 await _dataContext.SaveChangesAsync();
-                
-                //filtering only the month needed from the db into a list
-                var thisMonthPayments = await _dataContext.Payments.Where
-                (p => p.Month == Payment.Month).OrderBy(p => p.DayOfMonthDue).ToListAsync();
-                PaymentList.Clear();
-                
-                foreach (var p in thisMonthPayments)
-                {
-                    PaymentList.Add(p);
-                }
-                //await Shell.Current.GoToAsync("..");
+
+                WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(payment.Month));
                 await Shell.Current.GoToAsync("..");
 
             }

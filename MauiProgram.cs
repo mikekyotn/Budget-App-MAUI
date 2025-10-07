@@ -19,19 +19,23 @@ namespace Budget_App_MAUI
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             //Register services
-            builder.Services.AddSingleton<BaseViewModel>(); //base for all view models
+            //builder.Services.AddSingleton<BaseViewModel>(); //base for all view models
             builder.Services.AddSingleton<MonthViewModel>(); //model for MainPage
             builder.Services.AddSingleton<MainPage>();
             builder.Services.AddTransient<DetailsViewModel>(); //transient because may be different each time
             builder.Services.AddTransient<DetailsPage>(); //transient may not need to call often
-            
-            builder.Services.AddDbContext<PaymentDataContext>(options =>
+
+            //register the DataContext as a singleton so same instance used throughout app
+            //instead of using AddDbContext which is scoped and creates new instance per request
+            builder.Services.AddSingleton<PaymentDataContext>(sp =>
             {
-                options.UseSqlite("Data Source=payments.db");
+                var optionsBuilder = new DbContextOptionsBuilder<PaymentDataContext>();
+                optionsBuilder.UseSqlite("Data Source=payments.db");
+                return new PaymentDataContext(optionsBuilder.Options);
             });
 
 #if DEBUG
-    		builder.Logging.AddDebug();
+            builder.Logging.AddDebug();
 #endif           
 
             //Add dataseeding here SEE MauiDemoNoMVVM example

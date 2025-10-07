@@ -1,13 +1,12 @@
 ﻿using Budget_App_MAUI.Data;
+using Budget_App_MAUI.Messages;
 using Budget_App_MAUI.Models;
 using Budget_App_MAUI.ViewModel;
-using Budget_App_MAUI.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
-
-
 //using Java.Time;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -17,32 +16,32 @@ using System.Transactions;
 
 namespace Budget_App_MAUI.ViewModel
 {
-    //This is receiveing the transactionId from the MonthViewModel when a transaction is selected
-    [QueryProperty(nameof(TransactionId), "transactionId")]
-    public partial class DetailsViewModel : BaseViewModel
+    //This is receiveing the PaymentId from the MonthViewModel when a transaction is selected
+    [QueryProperty(nameof(PaymentId), "paymentId")]
+    public partial class DetailsViewModel:BaseViewModel
     {
-        private TransactionDataContext _dataContext;
-        public DetailsViewModel(TransactionDataContext dataContext)
+        private PaymentDataContext _dataContext;
+        public DetailsViewModel(PaymentDataContext dataContext)
         {
-            Title = "Transaction Details";
+            Title = "Payment Details";
             _dataContext = dataContext;
         }
 
         [ObservableProperty]
-        string transactionId;
+        string paymentId;
         [ObservableProperty]
-        Models.Transaction transaction;
+        Payment payment;
 
-        partial void OnTransactionIdChanged(string value)
+        partial void OnPaymentIdChanged(string value)
         {
             if (Guid.TryParse(value, out var guid))
             {
                 // Load the transaction details based on the parsed GUID
-                Transaction = _dataContext.Transactions.Find(guid);
+                Payment = _dataContext.Payments.Find(guid);
             }
             else
             {
-                Shell.Current.DisplayAlert("Invalid ID", "The provided transaction ID is not valid.", "OK");
+                Shell.Current.DisplayAlert("Invalid ID", "The provided Payment ID is not valid.", "OK");
                 return;
             }
         }
@@ -57,11 +56,21 @@ namespace Budget_App_MAUI.ViewModel
         {
             try
             {
-                _dataContext.Transactions.Update(transaction);
-                await _dataContext.SaveChangesAsync(); 
-                WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage());
-                await Shell.Current.GoToAsync("..");
+                _dataContext.Payments.Update(payment);
+                await _dataContext.SaveChangesAsync();
                 
+                //filtering only the month needed from the db into a list
+                var thisMonthPayments = await _dataContext.Payments.Where
+                (p => p.Month == Payment.Month).OrderBy(p => p.DayOfMonthDue).ToListAsync();
+                PaymentList.Clear();
+                
+                foreach (var p in thisMonthPayments)
+                {
+                    PaymentList.Add(p);
+                }
+                //await Shell.Current.GoToAsync("..");
+                await Shell.Current.GoToAsync("..");
+
             }
             catch (Exception ex)
             {

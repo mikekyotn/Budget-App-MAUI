@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace Budget_App_MAUI.Models
 {
-    public class Transaction
+    public class Payment
     {
         //[Key]
         public Guid Id { get; set; }
@@ -19,8 +19,8 @@ namespace Budget_App_MAUI.Models
         public string Category { get; set; }
         public string Comments { get; set; }        
         public bool IsPaid { get; set; }
-        public decimal PaymentEstimated { get; set; }
-        public decimal PaymentActual { get; set; }
+        public decimal AmountEstimated { get; set; }
+        public decimal AmountActual { get; set; }
 
     }
     public enum TransactMonth

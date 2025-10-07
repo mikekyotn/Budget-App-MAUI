@@ -17,54 +17,47 @@ namespace Budget_App_MAUI.ViewModel
     public partial class MonthViewModel:BaseViewModel
     {
         //Create the context to use for accessing the db
-        private TransactionDataContext _transactionDataContext;
-        //Make an observable collection to put on frontend and is responsive to changes
-        public ObservableCollection<Transaction> Transactions { get; set; } = new ObservableCollection<Transaction>();
+        private PaymentDataContext _paymentDataContext;
 
-        public MonthViewModel(TransactionDataContext dataContext)
+        public MonthViewModel(PaymentDataContext dataContext)
         {
             Title = "Monthly Budget View";
-            _transactionDataContext = dataContext;
-            
-            WeakReferenceMessenger.Default.Register<TransactionUpdatedMessage>(this, (r, m) =>
-            {
-                LoadTransactionsByMonthAsync(TransactMonth.January); //NEED TO UPDATE THIS ARGUMENT TO RESPOND TO USER SELECTION OF MONTH
-            });
+            _paymentDataContext = dataContext;
+                       
             //NEED TO UPDATE THIS ARGUMENT TO RESPOND TO USER SELECTION OF MONTH
-            LoadTransactionsByMonthAsync(TransactMonth.January);            
+            LoadPaymentsByMonthAsync(TransactMonth.January);            
         }
 
         //Get the filtered transaction data for the month from the db into a variable
-        //Add each transaction into the Observable Collection-Transactions using foreach .Add
+        //Add each transaction into the Observable Collection-PaymentList using foreach .Add
         [RelayCommand]
-        private async void LoadTransactionsByMonthAsync(TransactMonth month)
+        public async Task LoadPaymentsByMonthAsync(TransactMonth month)
         {
             try
             {
-                await _transactionDataContext.Database.EnsureCreatedAsync();
-                
+                await _paymentDataContext.Database.EnsureCreatedAsync();
                 //filtering only the month needed from the db into a list
-                var thisMonthTransactions = await _transactionDataContext.Transactions.Where
-                (t => t.Month == month).OrderBy(t => t.DayOfMonthDue).ToListAsync(); 
-                Transactions.Clear();
-                foreach (var transaction in thisMonthTransactions)
+                var thisMonthPayments = await _paymentDataContext.Payments.Where
+                (t => t.Month == month).OrderBy(t => t.DayOfMonthDue).ToListAsync();
+                PaymentList.Clear();
+                foreach (var payment in thisMonthPayments)
                 {
-                    Transactions.Add(transaction);
+                    PaymentList.Add(payment);
                 }
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error Loading Transactions", ex.Message, "OK");
+                await Shell.Current.DisplayAlert("Error Loading Payments", ex.Message, "OK");
             }
 
         }
 
         [RelayCommand]
-        async Task GoToDetailsAsync(Transaction transaction)
+        async Task GoToDetailsAsync(Payment payment)
         {
-            if (transaction == null) { return; }
-            //send the transactionId which is the Guid to the DetailsViewModel using query (?) property
-            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?transactionId={transaction.Id}");
+            if (payment == null) { return; }
+            //send the paymentId which is the Guid to the DetailsViewModel using query (?) property
+            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?paymentId={payment.Id}");
         }
     }
 }

@@ -8,11 +8,11 @@ using System.Threading.Tasks;
 
 namespace Budget_App_MAUI.Data
 {
-    public class TransactionDataContext:DbContext
+    public class PaymentDataContext:DbContext
     {
-        public DbSet<Transaction> Transactions { get; set; }
+        public DbSet<Payment> Payments { get; set; }
 
-        public TransactionDataContext(DbContextOptions<TransactionDataContext> options) : base(options) 
+        public PaymentDataContext(DbContextOptions<PaymentDataContext> options) : base(options) 
         {
         
         }

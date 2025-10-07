@@ -9,23 +9,23 @@
         <Grid ColumnDefinitions="150,150" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               HorizontalOptions="Center" VerticalOptions="Center">
             <Label Grid.Row="0" Grid.Column="0" Text="Month"/>
-            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Transaction.Month}"/>
+            <Entry Grid.Row="0" Grid.Column="1" Text="{Binding Payment.Month}"/>
             <Label Grid.Row="1" Grid.Column="0" Text="Day Due"/>
-            <Entry Grid.Row="1" Grid.Column="1" Text="{Binding Transaction.DayOfMonthDue}"/>
+            <Entry Grid.Row="1" Grid.Column="1" Text="{Binding Payment.DayOfMonthDue}"/>
             <Label Grid.Row="2" Grid.Column="0" Text="Type"/>
-            <Entry Grid.Row="2" Grid.Column="1" Text="{Binding Transaction.Type}"/>
+            <Entry Grid.Row="2" Grid.Column="1" Text="{Binding Payment.Type}"/>
             <Label Grid.Row="3" Grid.Column="0" Text="Description"/>
-            <Entry Grid.Row="3" Grid.Column="1" Text="{Binding Transaction.Description}"/>
+            <Entry Grid.Row="3" Grid.Column="1" Text="{Binding Payment.Description}"/>
             <Label Grid.Row="4" Grid.Column="0" Text="Category"/>
-            <Entry Grid.Row="4" Grid.Column="1" Text="{Binding Transaction.Category}"/>
+            <Entry Grid.Row="4" Grid.Column="1" Text="{Binding Payment.Category}"/>
             <Label Grid.Row="5" Grid.Column="0" Text="Comments"/>
-            <Entry Grid.Row="5" Grid.Column="1" Text="{Binding Transaction.Comments}"/>
+            <Entry Grid.Row="5" Grid.Column="1" Text="{Binding Payment.Comments}"/>
             <Label Grid.Row="6" Grid.Column="0" Text="Budgeted Amount"/>
-            <Entry Grid.Row="6" Grid.Column="1" Text="{Binding Transaction.PaymentEstimated}"/>
+            <Entry Grid.Row="6" Grid.Column="1" Text="{Binding Payment.AmountEstimated}"/>
             <Label Grid.Row="7" Grid.Column="0" Text="Actual Amount"/>
-            <Entry Grid.Row="7" Grid.Column="1" Text="{Binding Transaction.PaymentActual}"/>
+            <Entry Grid.Row="7" Grid.Column="1" Text="{Binding Payment.AmountActual}"/>
             <Label Grid.Row="8" Grid.Column="0" Text="Is Paid?"/>
-            <Label Grid.Row="8" Grid.Column="1" Text="{Binding Transaction.IsPaid}"/>
+            <Label Grid.Row="8" Grid.Column="1" Text="{Binding Payment.IsPaid}"/>
             <Button Grid.Row="9" Grid.Column="0" Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="Center"/>
             <Button Grid.Row="9" Grid.Column="1" Text="Cancel" Command="{Binding GoBackCommand}" HorizontalOptions="Center"/>
         </Grid>

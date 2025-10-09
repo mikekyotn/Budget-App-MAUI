@@ -74,5 +74,10 @@ namespace Budget_App_MAUI.ViewModel
             //Navigate to the DetailsPage to create a new payment
             await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?paymentId={newPaymentId}&month={(int)selectedMonth}");
         }
+        [RelayCommand]
+        async Task GoToMenuAsync()
+        {
+            await Shell.Current.GoToAsync($"{nameof(MenuPage)}"); 
+        }
     }
 }

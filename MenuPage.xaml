@@ -4,8 +4,9 @@
              x:Class="Budget_App_MAUI.MenuPage"
              xmlns:viewmodel="clr-namespace:Budget_App_MAUI.ViewModel"
              x:DataType="viewmodel:MenuViewModel"
-             Title="MenuPage">
+             Title="{Binding Title}">
     <VerticalStackLayout>
-        
+        <Picker Title="Year" ItemsSource="{Binding AvailableYears}" SelectedItem="{Binding SelectedYear}" />
+        <Picker Title="Month" ItemsSource="{Binding AvailableMonths}" SelectedItem="{Binding SelectedMonth}" />
     </VerticalStackLayout>
 </ContentPage>

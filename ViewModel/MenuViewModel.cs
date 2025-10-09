@@ -30,7 +30,7 @@ namespace Budget_App_MAUI.ViewModel
         {
             Title = "Menu";
             _dataContext = dataContext;
-
+            GetAvailableYearsAsync();
         }
 
         public async Task GetAvailableYearsAsync()
@@ -42,7 +42,7 @@ namespace Budget_App_MAUI.ViewModel
                 .ToListAsync();
             
             AvailableYears = new ObservableCollection<int>(years);
-            selectedYear = AvailableYears.FirstOrDefault(); //default to most recent year
+            SelectedYear = AvailableYears.FirstOrDefault(); //default to most recent year
             await LoadMonthsForYearAsync(SelectedYear);
 
         }
@@ -51,7 +51,6 @@ namespace Budget_App_MAUI.ViewModel
         {
             LoadMonthsForYearAsync(value);
         }
-
         public async Task LoadMonthsForYearAsync(int year)
         {
             var months = await _dataContext.MonthIndices

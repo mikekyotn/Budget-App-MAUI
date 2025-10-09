@@ -20,7 +20,7 @@ namespace Budget_App_MAUI.ViewModel
         private PaymentDataContext _paymentDataContext;
 
         //!!!!!---USE THIS VARIABLE TO UPDATE THE MONTH SELECTED ---------!!!!!!!!
-        public TransactMonth selectedMonth = TransactMonth.January;
+        public PaymentMonth selectedMonth = PaymentMonth.January;
 
         public MonthViewModel(PaymentDataContext dataContext)
         {
@@ -38,7 +38,7 @@ namespace Budget_App_MAUI.ViewModel
         //Get the filtered transaction data for the month from the db into a variable
         //Add each transaction into the Observable Collection-PaymentList using foreach .Add
         [RelayCommand]
-        public async Task LoadPaymentsByMonthAsync(TransactMonth month)
+        public async Task LoadPaymentsByMonthAsync(PaymentMonth month)
         {
             try
             {

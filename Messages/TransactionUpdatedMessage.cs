@@ -8,9 +8,9 @@ using CommunityToolkit.Mvvm.Messaging.Messages;
 
 namespace Budget_App_MAUI.Messages
 {
-    public class TransactionUpdatedMessage:ValueChangedMessage<TransactMonth>
+    public class TransactionUpdatedMessage:ValueChangedMessage<PaymentMonth>
     {
-        public TransactionUpdatedMessage(TransactMonth month) : base(month)
+        public TransactionUpdatedMessage(PaymentMonth month) : base(month)
         {
         }
     }

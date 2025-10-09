@@ -13,8 +13,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
-using Windows.UI;
 //using Windows.UI;
+
 
 namespace Budget_App_MAUI.ViewModel
 {
@@ -38,15 +38,15 @@ namespace Budget_App_MAUI.ViewModel
             PaymentTypes = Enum.GetValues(typeof(PaymentType)).Cast<PaymentType>().ToList();
             DaysInMonth = Enumerable.Range(1, 31).ToList(); //List of days 1-31 for the DayOfMonthDue Picker
         }
-        TransactMonth SelectedMonth { get; set; } //to hold the Enum from MonthQuery passed from MonthViewModel
+        PaymentMonth SelectedMonth { get; set; } //to hold the Enum from MonthQuery passed from MonthViewModel
         public string MonthQuery
         {
             set //parsing the string value into an int to match the TransactMonth enum
             {
                 if (int.TryParse(value, out int monthValue) &&
-                    Enum.IsDefined(typeof(TransactMonth), monthValue))
+                    Enum.IsDefined(typeof(PaymentMonth), monthValue))
                 {
-                    SelectedMonth = (TransactMonth)monthValue;
+                    SelectedMonth = (PaymentMonth)monthValue;
                 }
             }
         }
@@ -66,8 +66,13 @@ namespace Budget_App_MAUI.ViewModel
                     Payment = _dataContext.Payments.Find(guid);
                 }
                 else //create a new Payment with the SelectedMonth
-                {                    
-                    Payment = new Payment(Guid.NewGuid(), SelectedMonth);
+                {
+                    int year;
+                    if (SelectedMonth == PaymentMonth.TEMPLATE)
+                        year = 0000; //template payments have year 0000
+                    else
+                        year = DateTime.Now.Year; //current year for new payments
+                    Payment = new Payment(Guid.NewGuid(), SelectedMonth, year);
                     //Do not add the new Payment to the db until the user adds details and saves
                     
                 }
@@ -90,12 +95,24 @@ namespace Budget_App_MAUI.ViewModel
             try
             {
                 //Add if new Payment otherwise update existing
-                var existing = await _dataContext.Payments.FindAsync(payment.Id);
+                var existing = await _dataContext.Payments.FindAsync(Payment.Id);
                 if (existing == null)
-                    _dataContext.Add(payment);
+                    _dataContext.Add(Payment);
                 else
-                    _dataContext.Update(payment);
-                
+                    _dataContext.Update(Payment);
+
+                //check if need to update the MonthIndex table
+                bool yrMonthExists = await _dataContext.MonthIndices
+                    .AnyAsync(m => m.Year == Payment.Year && m.Month == Payment.Month);
+
+                if (!yrMonthExists)
+                {
+                    _dataContext.MonthIndices.Add(new MonthIndex
+                    {
+                        Year = Payment.Year,
+                        Month = Payment.Month
+                    });
+                }
                 await _dataContext.SaveChangesAsync();
 
                 //Message the MonthViewModel to refresh the list

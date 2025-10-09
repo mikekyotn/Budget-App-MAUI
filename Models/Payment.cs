@@ -14,7 +14,8 @@ namespace Budget_App_MAUI.Models
         public Guid Id { get; set; }
         public PaymentType Type { get; set; }
         public int DayOfMonthDue { get; set; }
-        public TransactMonth Month { get; set; }
+        public PaymentMonth Month { get; set; }
+        public int Year { get; set; } = DateTime.Now.Year; //default to current year
         public string? Description { get; set; }
         public string? Category { get; set; }
         public string? Comments { get; set; }
@@ -28,23 +29,25 @@ namespace Budget_App_MAUI.Models
             Id = Guid.NewGuid();
         }
         //constructor to create a new payment that accepts a new Id instead of creates one, with all details or defaults 
-        public Payment(Guid newId, TransactMonth month, PaymentType type = PaymentType.Expense, int dayDue = 1,  string description = "Update", decimal amtEstimated = 0.00m,
+        public Payment(Guid newId, PaymentMonth month, int year, PaymentType type = PaymentType.Expense, int dayDue = 1, string description = "Update", decimal amtEstimated = 0.00m,
             string category = "Undefined", string comments = "None", bool isPaid = false, decimal amtActual = 0.00m)
         {
             Id = newId;
             Type = type;
             DayOfMonthDue = dayDue;
             Month = month;
+            Year = year;
             Description = description;
             Category = category;
             Comments = comments;
             IsPaid = isPaid;
             AmountEstimated = amtEstimated;
             AmountActual = amtActual;
+            
         }
     }
         
-    public enum TransactMonth
+    public enum PaymentMonth
     {
         TEMPLATE, January, February, March, April, May, June,
         July, August, September, October, November, December

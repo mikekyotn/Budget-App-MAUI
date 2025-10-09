@@ -69,8 +69,7 @@ namespace Budget_App_MAUI.ViewModel
                 {                    
                     Payment = new Payment(Guid.NewGuid(), SelectedMonth);
                     //Do not add the new Payment to the db until the user adds details and saves
-                    //_dataContext.Payments.Add(Payment);
-                    //_dataContext.SaveChanges();
+                    
                 }
             }
             else
@@ -101,6 +100,7 @@ namespace Budget_App_MAUI.ViewModel
 
                 //Message the MonthViewModel to refresh the list
                 WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(payment.Month));
+                //retutn to previous page
                 await Shell.Current.GoToAsync("..");
 
             }

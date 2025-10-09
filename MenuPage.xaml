@@ -5,8 +5,11 @@
              xmlns:viewmodel="clr-namespace:Budget_App_MAUI.ViewModel"
              x:DataType="viewmodel:MenuViewModel"
              Title="{Binding Title}">
-    <VerticalStackLayout>
-        <Picker Title="Year" ItemsSource="{Binding AvailableYears}" SelectedItem="{Binding SelectedYear}" />
-        <Picker Title="Month" ItemsSource="{Binding AvailableMonths}" SelectedItem="{Binding SelectedMonth}" />
+    <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Start">
+        <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="100,250">
+            <Label Grid.Row="0" Grid.ColumnSpan="2" Text="Select a Previous Month to View/Edit" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Picker Grid.Column="0" Grid.Row="1" ItemsSource="{Binding AvailableYears}" SelectedItem="{Binding SelectedYear}" />
+            <Picker Grid.Column="1" Grid.Row="1" ItemsSource="{Binding AvailableMonths}" SelectedItem="{Binding SelectedMonth}" />
+        </Grid>
     </VerticalStackLayout>
 </ContentPage>

@@ -11,8 +11,8 @@
         <StackLayout>
         <Grid ColumnDefinitions="60, 200, 100, 100,*" RowDefinitions="*,*" ColumnSpacing="10" Padding="0" HeightRequest="100">
                 <Button Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" Text="Add Entry" Command="{Binding AddNewPaymentCommand}" HorizontalOptions="Start" VerticalOptions="Center"/>
-                <Label Grid.ColumnSpan="2" Grid.Column="2" Grid.Row="0" Text="SELECT any entry below to EDIT" HorizontalOptions="Start" VerticalOptions="Center" FontAttributes="Bold" />
-                <Button Grid.Column="4" Grid.Row="0" Text="Menu" Command="{Binding GoToMenuCommand}" HorizontalOptions="End" VerticalOptions="Center"/>
+                <Label Grid.Column="4" Grid.Row="0" Text="SELECT any entry below to EDIT" HorizontalOptions="Start" VerticalOptions="Center" FontAttributes="Bold" />
+                <Button Grid.Column="2" Grid.ColumnSpan="2" Grid.Row="0" Text="Menu" Command="{Binding GoToMenuCommand}" HorizontalOptions="Center" VerticalOptions="Center"/>
                 <Label Grid.Column="0" Grid.Row="1" Text="Day Due" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
             <Label Grid.Column="1" Grid.Row="1" Text="Description" HorizontalTextAlignment="End" VerticalOptions="Center"/>
             <Label Grid.Column="2" Grid.Row="1" Text="Estimated" HorizontalTextAlignment="Center" VerticalOptions="Center"/>

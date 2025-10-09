@@ -19,20 +19,20 @@ namespace Budget_App_MAUI.ViewModel
         //Create the context to use for accessing the db
         private PaymentDataContext _paymentDataContext;
 
+        //!!!!!---USE THIS VARIABLE TO UPDATE THE MONTH SELECTED ---------!!!!!!!!
+        public TransactMonth selectedMonth = TransactMonth.January;
+
         public MonthViewModel(PaymentDataContext dataContext)
         {
-            Title = "Monthly Budget View";
+            Title = $"{selectedMonth} Budget";
             _paymentDataContext = dataContext;
                        
-            //NEED TO UPDATE THIS ARGUMENT TO RESPOND TO USER SELECTION OF MONTH
-            LoadPaymentsByMonthAsync(TransactMonth.January);
+            LoadPaymentsByMonthAsync(selectedMonth);
 
             WeakReferenceMessenger.Default.Register<TransactionUpdatedMessage>(this, (recipient, message) =>
-            {
-                PaymentList.Clear();
+            {                
                 LoadPaymentsByMonthAsync(message.Value);
             });
-
         }
 
         //Get the filtered transaction data for the month from the db into a variable
@@ -42,11 +42,12 @@ namespace Budget_App_MAUI.ViewModel
         {
             try
             {
+                PaymentList.Clear();
                 await _paymentDataContext.Database.EnsureCreatedAsync();
                 //filtering only the month needed from the db into a list
                 var thisMonthPayments = await _paymentDataContext.Payments.Where
                 (t => t.Month == month).OrderBy(t => t.DayOfMonthDue).ToListAsync();
-                PaymentList.Clear();
+                
                 foreach (var payment in thisMonthPayments)
                 {
                     PaymentList.Add(payment);
@@ -56,7 +57,6 @@ namespace Budget_App_MAUI.ViewModel
             {
                 await Shell.Current.DisplayAlert("Error Loading Payments", ex.Message, "OK");
             }
-
         }
 
         [RelayCommand]
@@ -64,7 +64,15 @@ namespace Budget_App_MAUI.ViewModel
         {
             if (payment == null) { return; }
             //send the paymentId which is the Guid to the DetailsViewModel using query (?) property
-            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?paymentId={payment.Id}");
+            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?paymentId={payment.Id}&month={(int)selectedMonth}");
+        }
+        [RelayCommand]
+        async Task AddNewPaymentAsync()
+        {
+            //Create a new Guid to send to the DetailsViewModel to reuse that page for adding a new payment
+            Guid newPaymentId = Guid.NewGuid();        //    
+            //Navigate to the DetailsPage to create a new payment
+            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?paymentId={newPaymentId}&month={(int)selectedMonth}");
         }
     }
 }

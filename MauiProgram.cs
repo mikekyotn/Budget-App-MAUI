@@ -48,10 +48,10 @@ namespace Budget_App_MAUI
                 if(!context.Payments.Any())
                 {
                     context.Payments.AddRange(
-                        new Payment { Type="Income", DayOfMonthDue=2, Month=TransactMonth.January, Description="My Job", Category="Salary", Comments = "NA", IsPaid=true, AmountEstimated=2000.00m, AmountActual=1987.25m},
-                        new Payment { Type = "Expense", DayOfMonthDue = 4, Month = TransactMonth.January, Description = "Century21 Housing", Category = "Rent", Comments = "NA", IsPaid = false, AmountEstimated=850.00m, AmountActual=850.00m },
-                        new Payment { Type = "Income", DayOfMonthDue = 15, Month = TransactMonth.TEMPLATE, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = false, AmountEstimated=2000.00m, AmountActual=0 },
-                        new Payment { Type = "Expense", DayOfMonthDue = 6, Month = TransactMonth.January, Description = "Electric Company", Category = "Utilities", Comments = "NA", IsPaid = false, AmountEstimated=125.50m, AmountActual=0 }
+                        new Payment { Type = PaymentType.Income, DayOfMonthDue=2, Month=TransactMonth.January, Description="My Job", Category="Salary", Comments = "NA", IsPaid=true, AmountEstimated=2000.00m, AmountActual=1987.25m},
+                        new Payment { Type = PaymentType.Expense, DayOfMonthDue = 4, Month = TransactMonth.January, Description = "Century21 Housing", Category = "Rent", Comments = "NA", IsPaid = false, AmountEstimated=850.00m, AmountActual=850.00m },
+                        new Payment { Type = PaymentType.Income, DayOfMonthDue = 15, Month = TransactMonth.TEMPLATE, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = false, AmountEstimated=2000.00m, AmountActual=0 },
+                        new Payment { Type = PaymentType.Expense, DayOfMonthDue = 6, Month = TransactMonth.January, Description = "Electric Company", Category = "Utilities", Comments = "NA", IsPaid = false, AmountEstimated=125.50m, AmountActual=0 }
                     );
                     context.SaveChanges();
                 }

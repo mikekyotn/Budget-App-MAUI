@@ -13,18 +13,42 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Transactions;
+using Windows.UI;
+//using Windows.UI;
 
 namespace Budget_App_MAUI.ViewModel
 {
-    //This is receiveing the PaymentId from the MonthViewModel when a transaction is selected
+    //This is receiveing the PaymentId and Month as strings from the MonthViewModel when a transaction is selected
+    //ORDER MATTERS for the QueryProperty attributes and determines which property is set first
+    //Need month to be set first so the Payment can be created with the correct month if a new Payment is being added
+    [QueryProperty(nameof(MonthQuery), "month")]
     [QueryProperty(nameof(PaymentId), "paymentId")]
+    
     public partial class DetailsViewModel:BaseViewModel
     {
-        private PaymentDataContext _dataContext;
+        public PaymentDataContext _dataContext;
+        public List<PaymentType> PaymentTypes { get; set; } //For the PaymentType Picker control
+
+        public List<int> DaysInMonth { get; } //For the DayOfMonthDue Picker control
         public DetailsViewModel(PaymentDataContext dataContext)
         {
             Title = "Payment Details";
             _dataContext = dataContext;
+            //for the picker control need to create a list of the enum values
+            PaymentTypes = Enum.GetValues(typeof(PaymentType)).Cast<PaymentType>().ToList();
+            DaysInMonth = Enumerable.Range(1, 31).ToList(); //List of days 1-31 for the DayOfMonthDue Picker
+        }
+        TransactMonth SelectedMonth { get; set; } //to hold the Enum from MonthQuery passed from MonthViewModel
+        public string MonthQuery
+        {
+            set //parsing the string value into an int to match the TransactMonth enum
+            {
+                if (int.TryParse(value, out int monthValue) &&
+                    Enum.IsDefined(typeof(TransactMonth), monthValue))
+                {
+                    SelectedMonth = (TransactMonth)monthValue;
+                }
+            }
         }
 
         [ObservableProperty]
@@ -37,7 +61,17 @@ namespace Budget_App_MAUI.ViewModel
             if (Guid.TryParse(value, out var guid))
             {
                 // Load the transaction details based on the parsed GUID
-                Payment = _dataContext.Payments.Find(guid);
+                if (_dataContext.Payments.Find(guid) != null)
+                {
+                    Payment = _dataContext.Payments.Find(guid);
+                }
+                else //create a new Payment with the SelectedMonth
+                {                    
+                    Payment = new Payment(Guid.NewGuid(), SelectedMonth);
+                    //Do not add the new Payment to the db until the user adds details and saves
+                    //_dataContext.Payments.Add(Payment);
+                    //_dataContext.SaveChanges();
+                }
             }
             else
             {
@@ -48,7 +82,7 @@ namespace Budget_App_MAUI.ViewModel
 
         [RelayCommand]
         async Task GoBackAsync()
-        {
+        {            
             await Shell.Current.GoToAsync("..");
         }
         [RelayCommand]
@@ -56,9 +90,16 @@ namespace Budget_App_MAUI.ViewModel
         {
             try
             {
-                _dataContext.Payments.Update(payment);
+                //Add if new Payment otherwise update existing
+                var existing = await _dataContext.Payments.FindAsync(payment.Id);
+                if (existing == null)
+                    _dataContext.Add(payment);
+                else
+                    _dataContext.Update(payment);
+                
                 await _dataContext.SaveChangesAsync();
 
+                //Message the MonthViewModel to refresh the list
                 WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(payment.Month));
                 await Shell.Current.GoToAsync("..");
 

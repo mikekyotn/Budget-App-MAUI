@@ -8,6 +8,16 @@
              Title="{Binding Title}">
 
     <ScrollView>
+        <StackLayout>
+        <Grid ColumnDefinitions="60, 200, 100, 100,*" RowDefinitions="*,*" ColumnSpacing="10" Padding="0" HeightRequest="100">
+                <Button Grid.ColumnSpan="2" Grid.Column="0" Grid.Row="0" Text="Add Entry" Command="{Binding AddNewPaymentCommand}" HorizontalOptions="Start" VerticalOptions="Center"/>
+                <Label Grid.ColumnSpan="3" Grid.Column="2" Grid.Row="0" Text="SELECT any entry below to EDIT" HorizontalOptions="Start" VerticalOptions="Center" FontAttributes="Bold" />
+                <Label Grid.Column="0" Grid.Row="1" Text="Day Due" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+            <Label Grid.Column="1" Grid.Row="1" Text="Description" HorizontalTextAlignment="End" VerticalOptions="Center"/>
+            <Label Grid.Column="2" Grid.Row="1" Text="Estimated" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+            <Label Grid.Column="3" Grid.Row="1" Text="Actual" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+            <Label Grid.Column="4" Grid.Row="1" Text="Comments" HorizontalTextAlignment="Start" VerticalOptions="Center"/>
+        </Grid>
         <CollectionView ItemsSource="{Binding PaymentList}" SelectionMode="None">
             <CollectionView.EmptyView>
                 <StackLayout VerticalOptions="Center" HorizontalOptions="Center">
@@ -16,24 +26,25 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Payment">
-                    <Grid Padding="10">
+                    <Grid>
                         <Frame HeightRequest="50" Padding="0">
                             <Frame.GestureRecognizers>
                                 <TapGestureRecognizer CommandParameter="{Binding .}"
                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MonthViewModel}}, Path=GoToDetailsCommand}"/>
                             </Frame.GestureRecognizers>
-                            <Grid ColumnDefinitions="30, 200, 100, 100" ColumnSpacing="10" Padding="0" HeightRequest="50">
+                            <Grid ColumnDefinitions="60, 200, 100, 100,*" ColumnSpacing="10" Padding="0" HeightRequest="50">
                                 <Label Grid.Column="0" Text="{Binding DayOfMonthDue}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
                                 <Label Grid.Column="1" Text="{Binding Description}" HorizontalTextAlignment="End" VerticalOptions="Center"/>
                                 <Label Grid.Column="2" Text="{Binding AmountEstimated}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
                                 <Label Grid.Column="3" Text="{Binding AmountActual}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
-
+                                <Label Grid.Column="4" Text="{Binding Comments}" HorizontalTextAlignment="Start" VerticalOptions="Center"/>
                             </Grid>
                         </Frame>
                     </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>
+        </StackLayout>
     </ScrollView>
 
 </ContentPage>

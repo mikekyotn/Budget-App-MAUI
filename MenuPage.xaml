@@ -6,6 +6,10 @@
              x:DataType="viewmodel:MenuViewModel"
              Title="{Binding Title}">
     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Start">
+        <Grid RowDefinitions="Auto,Auto" WidthRequest="350">
+            <Button x:Name="btnGoToCurrentMonth" Grid.Row="0"  Text="View/Update Current Month" Command="{Binding ViewCurrentMonthCommand}" IsEnabled="{Binding IsCurrentMonthEnabled}" HorizontalOptions="Center" Margin="5"/>
+            <Button x:Name="btnGoToTemplate" Grid.Row="1"  Text="View/Update Template" Command="{Binding ViewTemplateCommand}" HorizontalOptions="Center" Margin="5"/>
+        </Grid>
         <Grid RowDefinitions="Auto,Auto" ColumnDefinitions="100,250">
             <Label Grid.Row="0" Grid.ColumnSpan="2" Text="Select a Previous Month to View/Edit" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
             <Picker Grid.Column="0" Grid.Row="1" ItemsSource="{Binding AvailableYears}" SelectedItem="{Binding SelectedYear}" />

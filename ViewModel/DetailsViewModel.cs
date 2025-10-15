@@ -41,7 +41,7 @@ namespace Budget_App_MAUI.ViewModel
         PaymentMonth SelectedMonth { get; set; } //to hold the Enum from MonthQuery passed from MonthViewModel
         public string MonthQuery
         {
-            set //parsing the string value into an int to match the TransactMonth enum
+            set //parsing the string value into an int to match the PaymentMonth enum
             {
                 if (int.TryParse(value, out int monthValue) &&
                     Enum.IsDefined(typeof(PaymentMonth), monthValue))
@@ -86,8 +86,9 @@ namespace Budget_App_MAUI.ViewModel
 
         [RelayCommand]
         async Task GoBackAsync()
-        {            
-            await Shell.Current.GoToAsync("..");
+        {
+            //return to previous page by clearing the navigation stack and using absolute route
+            await Shell.Current.GoToAsync("//MenuPage/MainPage");
         }
         [RelayCommand]
         async Task SaveAsync()
@@ -117,8 +118,8 @@ namespace Budget_App_MAUI.ViewModel
 
                 //Message the MonthViewModel to refresh the list
                 WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(payment.Month));
-                //retutn to previous page
-                await Shell.Current.GoToAsync("..");
+                //return to previous page by clearing the navigation stack and using absolute route
+                await Shell.Current.GoToAsync("//MenuPage/MainPage");
 
             }
             catch (Exception ex)

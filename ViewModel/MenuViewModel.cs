@@ -1,6 +1,9 @@
 ﻿using Budget_App_MAUI.Data;
 using Budget_App_MAUI.Models;
+using Budget_App_MAUI.Messages;
 using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -26,11 +29,23 @@ namespace Budget_App_MAUI.ViewModel
 
         [ObservableProperty]
         PaymentMonth selectedMonth;
+        [ObservableProperty]
+        bool isCurrentMonthEnabled = false;
+        int currentYear = DateTime.Now.Year;
+        int currentMonth = DateTime.Now.Month;
         public MenuViewModel(PaymentDataContext dataContext)
         {
             Title = "Menu";
             _dataContext = dataContext;
             GetAvailableYearsAsync();
+            
+            if(MonthExistsInDb(currentMonth, currentYear))
+            {
+                isCurrentMonthEnabled = true;
+                SelectedYear = currentYear;
+                SelectedMonth = (PaymentMonth)currentMonth;
+            }
+            
         }
 
         public async Task GetAvailableYearsAsync()
@@ -62,6 +77,30 @@ namespace Budget_App_MAUI.ViewModel
             AvailableMonths = new ObservableCollection<PaymentMonth>(months);
             SelectedMonth = AvailableMonths.FirstOrDefault(); //default to most recent month
         }
+        //Check if current month exists in  db
+        private bool MonthExistsInDb(int month, int year)
+        {
+            PaymentMonth payMonth = (PaymentMonth)month;
+            return _dataContext.MonthIndices.Any(m => m.Month == payMonth && m.Year == year);
+        }
 
+        [RelayCommand]
+        async Task ViewCurrentMonthAsync()
+        {
+            //if (SelectedMonth == 0 || SelectedYear == 0) { return; } //ensure valid selection
+            //send the selected month to the MonthViewModel using query (?) property
+            await Shell.Current.GoToAsync($"{nameof(MainPage)}?month={currentMonth}");
+            //Message the MonthViewModel to refresh the list
+            WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage((PaymentMonth)currentMonth));
+        }
+        [RelayCommand]
+        async Task ViewTemplateAsync()
+        {
+            //if (SelectedMonth == 0 || SelectedYear == 0) { return; } //ensure valid selection
+            //send the selected month to the MonthViewModel using query (?) property
+            await Shell.Current.GoToAsync($"{nameof(MainPage)}?month=0");
+            //Message the MonthViewModel to refresh the list
+            WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(PaymentMonth.TEMPLATE));
+        }
     }
 }

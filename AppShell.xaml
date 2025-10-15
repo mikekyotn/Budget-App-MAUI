@@ -6,9 +6,13 @@
     xmlns:local="clr-namespace:Budget_App_MAUI"
     Title="Budget_App_MAUI">
 
-    <ShellContent
+    <!--ShellContent
         Title="Home"
         ContentTemplate="{DataTemplate local:MainPage}"
-        Route="MainPage" />
+        Route="MainPage" /-->
+    <ShellContent
+    Title="Home"
+    ContentTemplate="{DataTemplate local:MenuPage}"
+    Route="MenuPage" />
 
 </Shell>

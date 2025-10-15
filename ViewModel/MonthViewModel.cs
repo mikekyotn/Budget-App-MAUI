@@ -14,24 +14,37 @@ using Budget_App_MAUI.Messages;
 
 namespace Budget_App_MAUI.ViewModel
 {
+    [QueryProperty(nameof(SelectedMonthInt), "month")]
     public partial class MonthViewModel:BaseViewModel
     {
         //Create the context to use for accessing the db
         private PaymentDataContext _paymentDataContext;
 
-        //!!!!!---USE THIS VARIABLE TO UPDATE THE MONTH SELECTED ---------!!!!!!!!
-        public PaymentMonth selectedMonth = PaymentMonth.January;
-
+        //This tells the main page which month to display
+        [ObservableProperty]
+        PaymentMonth selectedMonth;
+        public string SelectedMonthInt
+        {
+            set //parsing the string value into an int to match the PaymentMonth enum
+            {
+                if (int.TryParse(value, out int monthValue) &&
+                    Enum.IsDefined(typeof(PaymentMonth), monthValue))
+                {
+                    SelectedMonth = (PaymentMonth)monthValue;
+                }
+            }
+        }
         public MonthViewModel(PaymentDataContext dataContext)
         {
             Title = $"{selectedMonth} Budget";
             _paymentDataContext = dataContext;
                        
-            LoadPaymentsByMonthAsync(selectedMonth);
+            LoadPaymentsByMonthAsync(SelectedMonth);
 
             WeakReferenceMessenger.Default.Register<TransactionUpdatedMessage>(this, (recipient, message) =>
             {                
                 LoadPaymentsByMonthAsync(message.Value);
+                Title = $"{message.Value} Budget"; //to update the title
             });
         }
 
@@ -77,7 +90,7 @@ namespace Budget_App_MAUI.ViewModel
         [RelayCommand]
         async Task GoToMenuAsync()
         {
-            await Shell.Current.GoToAsync($"{nameof(MenuPage)}"); 
+            await Shell.Current.GoToAsync(".."); 
         }
     }
 }

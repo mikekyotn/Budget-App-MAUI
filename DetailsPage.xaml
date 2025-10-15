@@ -26,7 +26,7 @@
             <Entry Grid.Row="7" Grid.Column="1" Text="{Binding Payment.AmountActual}"/>
             <Label Grid.Row="8" Grid.Column="0" Text="Is Paid?"/>
             <Label Grid.Row="8" Grid.Column="1" Text="{Binding Payment.IsPaid}"/>
-            <Button Grid.Row="9" Grid.Column="0" Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="Center"/>
+            <Button Grid.Row="9" Grid.Column="0" Text="Save" Command="{Binding SaveCommand}" HorizontalOptions="Center" />
             <Button Grid.Row="9" Grid.Column="1" Text="Cancel" Command="{Binding GoBackCommand}" HorizontalOptions="Center"/>
         </Grid>
     </ScrollView>

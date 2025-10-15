@@ -12,7 +12,6 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-
 namespace Budget_App_MAUI.ViewModel
 {
     public partial class MenuViewModel: BaseViewModel
@@ -30,7 +29,10 @@ namespace Budget_App_MAUI.ViewModel
         [ObservableProperty]
         PaymentMonth selectedMonth;
         [ObservableProperty]
-        bool isCurrentMonthEnabled = false;
+        private bool isCurrentMonthEnabled = false;
+        [ObservableProperty]
+        private bool isCopyFromTemplateEnabled = true; 
+
         int currentYear = DateTime.Now.Year;
         int currentMonth = DateTime.Now.Month;
         public MenuViewModel(PaymentDataContext dataContext)
@@ -41,11 +43,17 @@ namespace Budget_App_MAUI.ViewModel
             
             if(MonthExistsInDb(currentMonth, currentYear))
             {
-                isCurrentMonthEnabled = true;
+                IsCurrentMonthEnabled = true;
                 SelectedYear = currentYear;
                 SelectedMonth = (PaymentMonth)currentMonth;
             }
-            
+            int nextMonth = currentMonth + 1 > 12 ? 1 : currentMonth + 1;
+            int nextMonthYear = currentMonth + 1 > 12 ? currentYear + 1 : currentYear;
+            if (MonthExistsInDb(nextMonth, nextMonthYear))
+            {
+                IsCopyFromTemplateEnabled = false; //disable the button if next month already exists
+            }
+
         }
 
         public async Task GetAvailableYearsAsync()
@@ -86,8 +94,7 @@ namespace Budget_App_MAUI.ViewModel
 
         [RelayCommand]
         async Task ViewCurrentMonthAsync()
-        {
-            //if (SelectedMonth == 0 || SelectedYear == 0) { return; } //ensure valid selection
+        {            
             //send the selected month to the MonthViewModel using query (?) property
             await Shell.Current.GoToAsync($"{nameof(MainPage)}?month={currentMonth}");
             //Message the MonthViewModel to refresh the list
@@ -95,12 +102,74 @@ namespace Budget_App_MAUI.ViewModel
         }
         [RelayCommand]
         async Task ViewTemplateAsync()
-        {
-            //if (SelectedMonth == 0 || SelectedYear == 0) { return; } //ensure valid selection
+        {            
             //send the selected month to the MonthViewModel using query (?) property
             await Shell.Current.GoToAsync($"{nameof(MainPage)}?month=0");
             //Message the MonthViewModel to refresh the list
             WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(PaymentMonth.TEMPLATE));
+        }
+        [RelayCommand]
+        async Task ViewSelectedMonthAsync()
+        {            
+            //send the selected month to the MonthViewModel using query (?) property
+            await Shell.Current.GoToAsync($"{nameof(MainPage)}?month={SelectedMonth}");
+            //Message the MonthViewModel to refresh the list
+            WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage((PaymentMonth)SelectedMonth));
+        }
+        [RelayCommand]
+        async Task CreateFromTemplate()
+        {
+            if(IsCurrentMonthEnabled)
+            {
+                //do some action to copy template with next month, this year/next if Dec
+                CopyTemplateToMonth(_dataContext, currentMonth + 1 > 12 ? 1 : currentMonth + 1, currentMonth + 1 > 12 ? currentYear + 1 : currentYear);
+                await Shell.Current.DisplayAlert("Template Copied", "Next month was created and populated from template. Please select year/month below to view.", "OK");
+                GetAvailableYearsAsync(); //refresh the years/months pickers
+                IsCopyFromTemplateEnabled = false; //disable the button if next month now exists
+            }
+            else
+            {
+                //do action to copy template to current month
+                CopyTemplateToMonth(_dataContext, currentMonth, currentYear);                
+                await Shell.Current.DisplayAlert("Template Copied", "Current month did not exist so was created and populated from template. Please use the View/Update Current Month above.", "OK");
+                GetAvailableYearsAsync(); //refresh the years/months pickers
+                IsCurrentMonthEnabled = true; //enable the button now that current month exists
+            }
+        }
+
+        static void CopyTemplateToMonth(PaymentDataContext context, int month, int year)
+        {
+            var templatePayments = context.Payments.Where(p => p.Month == PaymentMonth.TEMPLATE).ToList();
+            foreach (var template in templatePayments)
+            {
+                var newPayment = new Payment
+                {
+                    Id = Guid.NewGuid(),
+                    Type = template.Type,
+                    DayOfMonthDue = template.DayOfMonthDue,
+                    Month = (PaymentMonth)month,
+                    Year = year,
+                    Description = template.Description,
+                    Category = template.Category,
+                    Comments = template.Comments,                                        
+                    IsPaid = template.IsPaid,
+                    AmountEstimated = template.AmountEstimated,
+                    AmountActual = template.AmountActual
+                    
+                };
+                context.Payments.Add(newPayment);
+            }
+            //add the new month to MonthIndices if it doesn't exist
+            if (!context.MonthIndices.Any(m => m.Month == (PaymentMonth)month && m.Year == year))
+            {
+                var newMonthIndex = new MonthIndex
+                {
+                    Month = (PaymentMonth)month,
+                    Year = year
+                };
+                context.MonthIndices.Add(newMonthIndex);
+            }
+            context.SaveChanges();
         }
     }
 }

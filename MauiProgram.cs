@@ -46,7 +46,7 @@ namespace Budget_App_MAUI
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<PaymentDataContext>();
-                //context.Database.EnsureDeleted(); //clearing the database to refresh if changing data
+                context.Database.EnsureDeleted(); //clearing the database to refresh if changing data
                 context.Database.EnsureCreated();
                 if(!context.Payments.Any())
                 {
@@ -55,9 +55,9 @@ namespace Budget_App_MAUI
                         new Payment { Type = PaymentType.Expense, DayOfMonthDue = 4, Month = PaymentMonth.January, Description = "Century21 Housing", Category = "Rent", Comments = "NA", IsPaid = false, AmountEstimated=850.00m, AmountActual=850.00m, Year = 2025 },
                         new Payment { Type = PaymentType.Income, DayOfMonthDue = 15, Month = PaymentMonth.TEMPLATE, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = false, AmountEstimated=2000.00m, AmountActual=0, Year = 0 },
                         new Payment { Type = PaymentType.Expense, DayOfMonthDue = 6, Month = PaymentMonth.January, Description = "Electric Company", Category = "Utilities", Comments = "NA", IsPaid = false, AmountEstimated=125.50m, AmountActual=0, Year = 2025 },
-                        new Payment { Type = PaymentType.Income, DayOfMonthDue = 2, Month = PaymentMonth.October, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = true, AmountEstimated = 1950.00m, AmountActual = 1987.25m, Year = 2025 },
-                        new Payment { Type = PaymentType.Expense, DayOfMonthDue = 4, Month = PaymentMonth.October, Description = "Century21 Housing", Category = "Rent", Comments = "NA", IsPaid = false, AmountEstimated = 850.00m, AmountActual = 850.00m, Year = 2025 },
-                        new Payment { Type = PaymentType.Income, DayOfMonthDue = 15, Month = PaymentMonth.October, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = false, AmountEstimated = 2000.00m, AmountActual = 0, Year = 2025 },
+                        //new Payment { Type = PaymentType.Income, DayOfMonthDue = 2, Month = PaymentMonth.October, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = true, AmountEstimated = 1950.00m, AmountActual = 1987.25m, Year = 2025 },
+                        //new Payment { Type = PaymentType.Expense, DayOfMonthDue = 4, Month = PaymentMonth.October, Description = "Century21 Housing", Category = "Rent", Comments = "NA", IsPaid = false, AmountEstimated = 850.00m, AmountActual = 850.00m, Year = 2025 },
+                        //new Payment { Type = PaymentType.Income, DayOfMonthDue = 15, Month = PaymentMonth.October, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = false, AmountEstimated = 2000.00m, AmountActual = 0, Year = 2025 },
                         new Payment { Type = PaymentType.Income, DayOfMonthDue = 2, Month = PaymentMonth.December, Description = "My Job", Category = "Salary", Comments = "NA", IsPaid = true, AmountEstimated = 1950.00m, AmountActual = 1987.25m, Year = 2024 },
                         new Payment { Type = PaymentType.Expense, DayOfMonthDue = 4, Month = PaymentMonth.December, Description = "Century21 Housing", Category = "Rent", Comments = "NA", IsPaid = true, AmountEstimated = 850.00m, AmountActual = 850.00m, Year = 2024 }
                     );
@@ -67,7 +67,7 @@ namespace Budget_App_MAUI
                 {
                     context.MonthIndices.AddRange(
                         new MonthIndex { Year = 0000, Month = PaymentMonth.TEMPLATE },
-                        new MonthIndex { Year = 2025, Month = PaymentMonth.October },
+                        //new MonthIndex { Year = 2025, Month = PaymentMonth.October },
                         new MonthIndex { Year = 2025, Month = PaymentMonth.January },
                         new MonthIndex { Year = 2024, Month = PaymentMonth.December }
                     );

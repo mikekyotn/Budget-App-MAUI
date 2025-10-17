@@ -10,4 +10,5 @@ public partial class DetailsPage : ContentPage
 		BindingContext = vm;
 		
     }
+
 }

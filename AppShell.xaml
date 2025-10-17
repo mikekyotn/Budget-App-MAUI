@@ -11,4 +11,5 @@
     ContentTemplate="{DataTemplate local:MenuPage}"
     Route="MenuPage" />
 
+
 </Shell>

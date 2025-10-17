@@ -19,10 +19,10 @@ namespace Budget_App_MAUI
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
             //Register services
-            builder.Services.AddSingleton<MonthViewModel>(); //model for MainPage
-            builder.Services.AddSingleton<MainPage>();
-            //builder.Services.AddTransient<MonthViewModel>(); //model for MainPage
-            //builder.Services.AddTransient<MainPage>();
+            //builder.Services.AddSingleton<MonthViewModel>(); //model for MainPage
+            //builder.Services.AddSingleton<MainPage>();
+            builder.Services.AddTransient<MonthViewModel>(); //model for MainPage
+            builder.Services.AddTransient<MainPage>();
             builder.Services.AddTransient<DetailsViewModel>(); //transient because may be different each time
             builder.Services.AddTransient<DetailsPage>(); //transient may not need to call often
             builder.Services.AddSingleton<MenuViewModel>();
@@ -46,7 +46,7 @@ namespace Budget_App_MAUI
             using (var scope = app.Services.CreateScope())
             {
                 var context = scope.ServiceProvider.GetRequiredService<PaymentDataContext>();
-                context.Database.EnsureDeleted(); //clearing the database to refresh if changing data
+                //context.Database.EnsureDeleted(); //clearing the database to refresh if changing data
                 context.Database.EnsureCreated();
                 if(!context.Payments.Any())
                 {

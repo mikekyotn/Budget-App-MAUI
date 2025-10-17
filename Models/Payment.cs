@@ -1,4 +1,5 @@
 ﻿//using Java.Time;
+using CommunityToolkit.Mvvm.ComponentModel;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -22,6 +23,17 @@ namespace Budget_App_MAUI.Models
         public bool IsPaid { get; set; }
         public decimal AmountEstimated { get; set; }
         public decimal AmountActual { get; set; }
+        //[ObservableProperty] Guid id;
+        //[ObservableProperty] PaymentType type;
+        //[ObservableProperty] int dayOfMonthDue;
+        //[ObservableProperty] PaymentMonth month;
+        //[ObservableProperty] int year;
+        //[ObservableProperty] string? description;
+        //[ObservableProperty] string? category;
+        //[ObservableProperty] string? comments;
+        //[ObservableProperty] bool isPaid;
+        //[ObservableProperty] decimal amountEstimated;
+        //[ObservableProperty] decimal amountActual;
 
         //constructor to create a new payment with just the Guid
         public Payment()

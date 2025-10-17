@@ -124,7 +124,7 @@ namespace Budget_App_MAUI.ViewModel
                 //do some action to copy template with next month, this year/next if Dec
                 CopyTemplateToMonth(_dataContext, currentMonth + 1 > 12 ? 1 : currentMonth + 1, currentMonth + 1 > 12 ? currentYear + 1 : currentYear);
                 await Shell.Current.DisplayAlert("Template Copied", "Next month was created and populated from template. Please select year/month below to view.", "OK");
-                GetAvailableYearsAsync(); //refresh the years/months pickers
+                await GetAvailableYearsAsync(); //refresh the years/months pickers
                 IsCopyFromTemplateEnabled = false; //disable the button if next month now exists
             }
             else
@@ -132,7 +132,7 @@ namespace Budget_App_MAUI.ViewModel
                 //do action to copy template to current month
                 CopyTemplateToMonth(_dataContext, currentMonth, currentYear);                
                 await Shell.Current.DisplayAlert("Template Copied", "Current month did not exist so was created and populated from template. Please use the View/Update Current Month above.", "OK");
-                GetAvailableYearsAsync(); //refresh the years/months pickers
+                await GetAvailableYearsAsync(); //refresh the years/months pickers
                 IsCurrentMonthEnabled = true; //enable the button now that current month exists
             }
         }

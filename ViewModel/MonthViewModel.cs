@@ -1,16 +1,16 @@
-﻿using CommunityToolkit.Mvvm.ComponentModel;
+﻿using Budget_App_MAUI.Data;
+using Budget_App_MAUI.Messages;
+using Budget_App_MAUI.Models;
+using CommunityToolkit.Mvvm.ComponentModel;
+using CommunityToolkit.Mvvm.Input;
+using CommunityToolkit.Mvvm.Messaging;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using Budget_App_MAUI.Models;
-using Budget_App_MAUI.Data;
-using Microsoft.EntityFrameworkCore;
-using CommunityToolkit.Mvvm.Input;
-using CommunityToolkit.Mvvm.Messaging;
-using Budget_App_MAUI.Messages;
 
 namespace Budget_App_MAUI.ViewModel
 {
@@ -78,6 +78,7 @@ namespace Budget_App_MAUI.ViewModel
                 {
                     PaymentList.Add(payment);
                 }
+                //Get the available funds for the month from the MonthIndices table
                 AvailableFunds = await _paymentDataContext.MonthIndices.Where(m => m.Month == month)
                     .Select(m => m.AvailableFunds).FirstAsync(); //FirstOrDefaultAsync();
             }
@@ -89,8 +90,8 @@ namespace Budget_App_MAUI.ViewModel
         private void CalculateProjectedFunds()
         {
             ProjectedFunds = AvailableFunds
-                + PaymentList.Where(p=> p.Type == PaymentType.Income).Sum(p => p.AmountEstimated)
-                - PaymentList.Where(p=> p.Type == PaymentType.Expense).Sum(p => p.AmountEstimated);
+                + PaymentList.Where(p=> p.Type == PaymentType.Income && p.IsPaid==false).Sum(p => p.AmountEstimated)
+                - PaymentList.Where(p=> (p.Type == PaymentType.Expense || p.Type==PaymentType.Transfer || p.Type==PaymentType.Investment) && p.IsPaid==false).Sum(p => p.AmountEstimated);
         }
 
         [RelayCommand]
@@ -113,6 +114,25 @@ namespace Budget_App_MAUI.ViewModel
         async Task GoToMenuAsync()
         {
             await Shell.Current.GoToAsync(".."); 
+        }
+        [RelayCommand]
+        async Task UpdateFunds()
+        {
+            string newFunds = await Shell.Current.DisplayPromptAsync("Update Available Funds",
+                "Enter the new available funds amount:", "OK", "Cancel","Amount", 10,
+                Keyboard.Numeric, AvailableFunds.ToString("C"));
+            AvailableFunds = decimal.TryParse(newFunds, out decimal result) ? result : AvailableFunds;
+            var currentMonthIndex = await _paymentDataContext.MonthIndices
+                .FirstOrDefaultAsync(m => m.Month == SelectedMonth);
+            _paymentDataContext.MonthIndices.Attach(currentMonthIndex);
+            currentMonthIndex.AvailableFunds = AvailableFunds;
+            //_paymentDataContext.MonthIndices.Update(new MonthIndex(SelectedMonth, AvailableFunds));
+            await _paymentDataContext.SaveChangesAsync();
+        }
+
+        partial void OnAvailableFundsChanged(decimal value)
+        {
+            CalculateProjectedFunds();
         }
     }
 }

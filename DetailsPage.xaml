@@ -6,7 +6,7 @@
              x:DataType="viewmodel:DetailsViewModel"
              Title="Payment Details">
     <ScrollView>
-        <Grid ColumnDefinitions="150,150" RowDefinitions="Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
+        <Grid ColumnDefinitions="170,150" RowDefinitions="50,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto,Auto"
               HorizontalOptions="Center" VerticalOptions="Center">
             <Label Grid.Row="0" Grid.Column="0" Text="Month" VerticalTextAlignment="Center"/>
             <Label Grid.Row="0" Grid.Column="1" Text="{Binding Payment.Month}"/>
@@ -14,12 +14,12 @@
             <Picker Grid.Row="1" Grid.Column="1" ItemsSource="{Binding DaysInMonth}" SelectedItem="{Binding Payment.DayOfMonthDue, Mode=TwoWay}"/>
             <Label Grid.Row="2" Grid.Column="0" Text="Type" VerticalTextAlignment="Center"/>
             <Picker Grid.Row="2" Grid.Column="1" ItemsSource="{Binding PaymentTypes}" SelectedItem="{Binding Payment.Type, Mode=TwoWay}"/>
-            <Label Grid.Row="3" Grid.Column="0" Text="Description" VerticalTextAlignment="Center"/>
+            <Label Grid.Row="3" Grid.Column="0" Text="Company/Payer/Payee" VerticalTextAlignment="Center"/>
             <Entry Grid.Row="3" Grid.Column="1" Text="{Binding Payment.Description}"/>
             <Label Grid.Row="4" Grid.Column="0" Text="Category" VerticalTextAlignment="Center"/>
             <Entry Grid.Row="4" Grid.Column="1" Text="{Binding Payment.Category}"/>
             <Label Grid.Row="5" Grid.Column="0" Text="Comments" VerticalTextAlignment="Center"/>
-            <Entry Grid.Row="5" Grid.Column="1" Text="{Binding Payment.Comments}"/>
+            <Entry Grid.Row="5" Grid.Column="1" Text="{Binding Payment.Comments}" Placeholder="Optional Comments"/>
             <Label Grid.Row="6" Grid.Column="0" Text="Budgeted Amount" VerticalTextAlignment="Center"/>
             <Entry Grid.Row="6" Grid.Column="1" Text="{Binding Payment.AmountEstimated}"/>
             <Label Grid.Row="7" Grid.Column="0" Text="Actual Amount" VerticalTextAlignment="Center"/>

@@ -66,20 +66,20 @@ namespace Budget_App_MAUI.ViewModel
                     if (existingPayment != null)
                     {
                         Payment = existingPayment;
-                        originalPaymentHolder = new Payment
-                        {
-                            Id = Payment.Id,
-                            Type = Payment.Type,
-                            DayOfMonthDue = Payment.DayOfMonthDue,
-                            Month = Payment.Month,
-                            Year = Payment.Year,
-                            Description = Payment.Description,
-                            Category = Payment.Category,
-                            Comments = Payment.Comments,
-                            IsPaid = Payment.IsPaid,
-                            AmountEstimated = Payment.AmountEstimated,
-                            AmountActual = Payment.AmountActual
-                        };
+                        //originalPaymentHolder = new Payment
+                        //{
+                        //    Id = Payment.Id,
+                        //    Type = Payment.Type,
+                        //    DayOfMonthDue = Payment.DayOfMonthDue,
+                        //    Month = Payment.Month,
+                        //    Year = Payment.Year,
+                        //    Description = Payment.Description,
+                        //    Category = Payment.Category,
+                        //    Comments = Payment.Comments,
+                        //    IsPaid = Payment.IsPaid,
+                        //    AmountEstimated = Payment.AmountEstimated,
+                        //    AmountActual = Payment.AmountActual
+                        //};
                     }
                     else //create a new Payment with the SelectedMonth
                     {

@@ -37,7 +37,6 @@ namespace Budget_App_MAUI.ViewModel
             //for the picker control need to create a list of the enum values
             PaymentTypes = Enum.GetValues(typeof(PaymentType)).Cast<PaymentType>().ToList();
             DaysInMonth = Enumerable.Range(1, 31).ToList(); //List of days 1-31 for the DayOfMonthDue Picker
-            //PopulateDetails(paymentId); //call to populate the Payment details once both Month and PaymentId are set
         }
         PaymentMonth SelectedMonth { get; set; } //to hold the Enum from MonthQuery passed from MonthViewModel
         public string MonthQuery
@@ -51,9 +50,7 @@ namespace Budget_App_MAUI.ViewModel
                 }
             }
         }
-        
-        //[ObservableProperty]
-        //public string paymentId { get; set; }
+
         [ObservableProperty]
         private Payment payment;
         private Payment originalPaymentHolder; //to hold original payment details in case of cancel
@@ -124,23 +121,11 @@ namespace Budget_App_MAUI.ViewModel
                 else
                     _dataContext.Update(Payment); //marks as modified
 
-                //check if need to update the MonthIndex table
-                //bool yrMonthExists = await _dataContext.MonthIndices
-                //    .AnyAsync(m => m.Year == Payment.Year && m.Month == Payment.Month);
-
-                //if (!yrMonthExists)
-                //{
-                //    _dataContext.MonthIndices.Add(new MonthIndex
-                //    {
-                //        Year = Payment.Year,
-                //        Month = Payment.Month
-                //    });
-                //}
                 await _dataContext.SaveChangesAsync(); //commits changes to db
                 //Message the MonthViewModel to refresh the list
                 WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(Payment.Month));
+                
                 //return to previous page by clearing the navigation stack and using absolute route
-                //await Shell.Current.GoToAsync("//MenuPage/MainPage");
                 await Shell.Current.GoToAsync($"//MenuPage/MainPage?month={Payment.Month}");
 
             }
@@ -149,43 +134,6 @@ namespace Budget_App_MAUI.ViewModel
                 await Shell.Current.DisplayAlert("Error Saving Transaction, Check All Fields", ex.Message, "OK");
             }
         }
-
-        //public async Task InitializeAsync()
-        //{
-        //    if (_paymentId == Guid.Empty || SelectedMonth == default)
-        //        return;
-
-        //    var existing = await _dataContext.Payments.FindAsync(_paymentId);
-        //    if (existing != null)
-        //    {
-        //        Payment = await _dataContext.Payments.FindAsync(_paymentId); //existing;
-        //        originalPaymentHolder = new Payment {
-        //            Id = Payment.Id,
-        //            Type = Payment.Type,
-        //            DayOfMonthDue = Payment.DayOfMonthDue,
-        //            Month = Payment.Month,
-        //            Year = Payment.Year,
-        //            Description = Payment.Description,
-        //            Category = Payment.Category,
-        //            Comments = Payment.Comments,
-        //            IsPaid = Payment.IsPaid,
-        //            AmountEstimated = Payment.AmountEstimated,
-        //            AmountActual = Payment.AmountActual
-        //        };
-        //    }
-        //    else
-        //    {
-        //        int year;
-        //        if (SelectedMonth == PaymentMonth.TEMPLATE)
-        //            year = 0000; //template payments have year 0000
-        //        else
-        //            year = DateTime.Now.Year; //current year for new payments
-        //        Payment = new Payment(Guid.NewGuid(), SelectedMonth, year);
-        //        //Do not add the new Payment to the db until the user adds details and saves
-        //        //int year = SelectedMonth == PaymentMonth.TEMPLATE ? 0000 : DateTime.Now.Year;
-        //        //Payment = new Payment(Guid.NewGuid(), SelectedMonth, year);
-        //    }
-        //}
 
     }
 }

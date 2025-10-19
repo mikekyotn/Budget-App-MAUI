@@ -55,7 +55,6 @@ namespace Budget_App_MAUI.ViewModel
             }
 
         }
-
         public async Task GetAvailableYearsAsync()
         {
             var years = await _dataContext.MonthIndices
@@ -64,6 +63,7 @@ namespace Budget_App_MAUI.ViewModel
                 .OrderByDescending(y => y)
                 .ToListAsync();
             
+            years.Remove(0); //remove template year if exists
             AvailableYears = new ObservableCollection<int>(years);
             SelectedYear = AvailableYears.FirstOrDefault(); //default to most recent year
             await LoadMonthsForYearAsync(SelectedYear);
@@ -82,6 +82,7 @@ namespace Budget_App_MAUI.ViewModel
                 .Select(m => m.Month)
                 .ToListAsync();
 
+            months.Remove(0); //remove template month if exists
             AvailableMonths = new ObservableCollection<PaymentMonth>(months);
             SelectedMonth = AvailableMonths.FirstOrDefault(); //default to most recent month
         }
@@ -136,7 +137,6 @@ namespace Budget_App_MAUI.ViewModel
                 IsCurrentMonthEnabled = true; //enable the button now that current month exists
             }
         }
-
         static void CopyTemplateToMonth(PaymentDataContext context, int month, int year)
         {
             var templatePayments = context.Payments.Where(p => p.Month == PaymentMonth.TEMPLATE).ToList();

@@ -20,9 +20,15 @@ namespace Budget_App_MAUI.ViewModel
         //Create the context to use for accessing the db
         private PaymentDataContext _paymentDataContext;
 
-        //This tells the main page which month to display
+        
         [ObservableProperty]
         PaymentMonth selectedMonth;
+        [ObservableProperty]
+        decimal availableFunds;
+        [ObservableProperty]
+        decimal projectedFunds;
+        
+        
         public string SelectedMonthInt
         {
             set //parsing the string value into an int to match the PaymentMonth enum
@@ -30,21 +36,26 @@ namespace Budget_App_MAUI.ViewModel
                 if (int.TryParse(value, out int monthValue) &&
                     Enum.IsDefined(typeof(PaymentMonth), monthValue))
                 {
-                    SelectedMonth = (PaymentMonth)monthValue;
+                    SelectedMonth = (PaymentMonth)monthValue;                    
                 }
             }
         }
         public MonthViewModel(PaymentDataContext dataContext)
         {
-            Title = $"{selectedMonth} Budget";
-            _paymentDataContext = dataContext;
-                       
+            //This tells the main page which month to display
+            Title = $"{SelectedMonth} Budget";
+            _paymentDataContext = dataContext;            
+
             LoadPaymentsByMonthAsync(SelectedMonth);
+            
+            CalculateProjectedFunds();
 
             WeakReferenceMessenger.Default.Register<TransactionUpdatedMessage>(this, (recipient, message) =>
-            {                
-                LoadPaymentsByMonthAsync(message.Value);
+            {
                 Title = $"{message.Value} Budget"; //to update the title
+                LoadPaymentsByMonthAsync(message.Value);
+                CalculateProjectedFunds();
+
             });
         }
 
@@ -67,11 +78,19 @@ namespace Budget_App_MAUI.ViewModel
                 {
                     PaymentList.Add(payment);
                 }
+                AvailableFunds = await _paymentDataContext.MonthIndices.Where(m => m.Month == month)
+                    .Select(m => m.AvailableFunds).FirstAsync(); //FirstOrDefaultAsync();
             }
             catch (Exception ex)
             {
                 await Shell.Current.DisplayAlert("Error Loading Payments", ex.Message, "OK");
             }
+        }
+        private void CalculateProjectedFunds()
+        {
+            ProjectedFunds = AvailableFunds
+                + PaymentList.Where(p=> p.Type == PaymentType.Income).Sum(p => p.AmountEstimated)
+                - PaymentList.Where(p=> p.Type == PaymentType.Expense).Sum(p => p.AmountEstimated);
         }
 
         [RelayCommand]

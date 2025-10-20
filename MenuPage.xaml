@@ -5,17 +5,20 @@
              xmlns:viewmodel="clr-namespace:Budget_App_MAUI.ViewModel"
              x:DataType="viewmodel:MenuViewModel"
              Title="{Binding Title}">
+
+    
     <VerticalStackLayout HorizontalOptions="Center" VerticalOptions="Center">
+        <Label Text="Simply Budgetable" FontSize="Large" FontAttributes="Bold" HorizontalTextAlignment="Center" HeightRequest="80"/>
         <Grid RowDefinitions="Auto,Auto, Auto" WidthRequest="300">
-            <Button Grid.Row="0"  Text="View/Update Current Month" Command="{Binding ViewCurrentMonthCommand}" IsEnabled="{Binding IsCurrentMonthEnabled}" HorizontalOptions="Center" Margin="5" WidthRequest="300"/>
-            <Button Grid.Row="1"  Text="View/Update Template" Command="{Binding ViewTemplateCommand}" HorizontalOptions="Center" Margin="5" WidthRequest="300"/>
-            <Button Grid.Row="2"  Text="Create Next Month from Template" Command="{Binding CreateFromTemplateCommand}" IsEnabled="{Binding IsCopyFromTemplateEnabled}" HorizontalOptions="Center" Margin="5" WidthRequest="300"/>
+            <Button Grid.Row="0"  Text="View/Update Current Month" Command="{Binding ViewCurrentMonthCommand}" IsEnabled="{Binding IsCurrentMonthEnabled}" HorizontalOptions="Center" Margin="5" WidthRequest="300" FontSize="16"/>
+            <Button Grid.Row="1"  Text="View/Update Template" Command="{Binding ViewTemplateCommand}" HorizontalOptions="Center" Margin="5" WidthRequest="300" FontSize="16"/>
+            <Button Grid.Row="2"  Text="Create Next Month from Template" Command="{Binding CreateFromTemplateCommand}" IsEnabled="{Binding IsCopyFromTemplateEnabled}" HorizontalOptions="Center" Margin="5" WidthRequest="300" FontSize="16"/>
         </Grid>
         <Grid RowDefinitions="Auto,Auto, Auto" ColumnDefinitions="100,200">
-            <Label Grid.Row="0" Grid.ColumnSpan="2" Text="Select a Previous Month to View/Edit" HorizontalTextAlignment="Center" VerticalTextAlignment="Center"/>
+            <Label Grid.Row="0" Grid.ColumnSpan="2" Text="Select a Previous Month to View/Edit" HorizontalTextAlignment="Center" VerticalTextAlignment="Center" FontSize="16"/>
             <Picker Grid.Column="0" Grid.Row="1" ItemsSource="{Binding AvailableYears}" SelectedItem="{Binding SelectedYear}" />
             <Picker Grid.Column="1" Grid.Row="1" ItemsSource="{Binding AvailableMonths}" SelectedItem="{Binding SelectedMonth}" />
-            <Button Grid.Row="2" Grid.ColumnSpan="2" Text="View Selected Month" Command="{Binding ViewSelectedMonthCommand}" HorizontalOptions="Center" Margin="5" WidthRequest="300"/>
+            <Button Grid.Row="2" Grid.ColumnSpan="2" Text="View Selected Month" Command="{Binding ViewSelectedMonthCommand}" HorizontalOptions="Center" Margin="5" WidthRequest="300" FontSize="16"/>
         </Grid>
     </VerticalStackLayout>
 </ContentPage>

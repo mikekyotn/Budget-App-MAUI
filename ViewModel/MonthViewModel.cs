@@ -19,16 +19,17 @@ namespace Budget_App_MAUI.ViewModel
     {
         //Create the context to use for accessing the db
         private PaymentDataContext _paymentDataContext;
-
-        
+ 
         [ObservableProperty]
         PaymentMonth selectedMonth;
         [ObservableProperty]
         decimal availableFunds;
         [ObservableProperty]
         decimal projectedFunds;
-        
-        
+        [ObservableProperty]
+        bool updateFundsButtonIsEnabled;
+
+
         public string SelectedMonthInt
         {
             set //parsing the string value into an int to match the PaymentMonth enum
@@ -36,29 +37,34 @@ namespace Budget_App_MAUI.ViewModel
                 if (int.TryParse(value, out int monthValue) &&
                     Enum.IsDefined(typeof(PaymentMonth), monthValue))
                 {
-                    SelectedMonth = (PaymentMonth)monthValue;                    
+                    SelectedMonth = (PaymentMonth)monthValue;
+                    if (SelectedMonth == PaymentMonth.TEMPLATE)
+                        UpdateFundsButtonIsEnabled = false;
+                    else
+                        UpdateFundsButtonIsEnabled = true;
                 }
             }
         }
+        //Page constructor
         public MonthViewModel(PaymentDataContext dataContext)
         {
             //This tells the main page which month to display
             Title = $"{SelectedMonth} Budget";
-            _paymentDataContext = dataContext;            
+            _paymentDataContext = dataContext;
 
+            //Initialize the Observable Collection
             LoadPaymentsByMonthAsync(SelectedMonth);
-            
+            //Initial calculation of projected funds
             CalculateProjectedFunds();
 
+            //Register to receive messages when transactions are updated
             WeakReferenceMessenger.Default.Register<TransactionUpdatedMessage>(this, (recipient, message) =>
             {
                 Title = $"{message.Value} Budget"; //to update the title
                 LoadPaymentsByMonthAsync(message.Value);
                 CalculateProjectedFunds();
-
             });
         }
-
 
         //Get the filtered transaction data for the month from the db into a variable
         //Add each transaction into the Observable Collection-PaymentList using foreach .Add
@@ -99,16 +105,17 @@ namespace Budget_App_MAUI.ViewModel
         {
             if (payment == null) { return; }
             //send the paymentId which is the Guid to the DetailsViewModel using query (?) property
-            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?payId={payment.Id}&month={(int)selectedMonth}");
+            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?payId={payment.Id}&month={(int)SelectedMonth}");
 
         }
         [RelayCommand]
         async Task AddNewPaymentAsync()
         {
             //Create a new Guid to send to the DetailsViewModel to reuse that page for adding a new payment
-            Guid newPaymentId = Guid.NewGuid();            
+            Guid newPaymentId = Guid.NewGuid();          
             //Navigate to the DetailsPage to create a new payment
-            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?payId={newPaymentId}&month={(int)selectedMonth}");
+            await Shell.Current.GoToAsync($"{nameof(DetailsPage)}?payId={newPaymentId}&month={(int)SelectedMonth}");
+            
         }
         [RelayCommand]
         async Task GoToMenuAsync()

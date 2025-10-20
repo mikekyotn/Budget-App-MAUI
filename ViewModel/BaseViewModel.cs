@@ -20,7 +20,8 @@ namespace Budget_App_MAUI.ViewModel
         
         [ObservableProperty]
         string title;
-               
+        
+
         public BaseViewModel()
         {
 

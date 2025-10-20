@@ -6,18 +6,18 @@
              xmlns:viewmodel="clr-namespace:Budget_App_MAUI.ViewModel"
              x:DataType="viewmodel:MonthViewModel"
              Title="{Binding Title}">
-
+    
     <ScrollView Padding="10">
-        <StackLayout>
-        <Grid ColumnDefinitions="60,150,100,100,100,150" RowDefinitions="*,*,*,*" ColumnSpacing="10" Padding="0">
-                <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Text="Add Entry" Command="{Binding AddNewPaymentCommand}" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="150" HeightRequest="50"/>
+        <StackLayout>            
+            <Grid ColumnDefinitions="60,150,100,100,100,150" RowDefinitions="*,*,*,*" ColumnSpacing="10" Padding="0">
+                <Button Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"  Text="Add Entry" Command="{Binding AddNewPaymentCommand}" HorizontalOptions="End" VerticalOptions="Center" WidthRequest="150" HeightRequest="50" FontSize="16"/>
                 <Label Grid.Row="2" Grid.Column="3" Grid.ColumnSpan="3" Text="SELECT entry below to EDIT/UPDATE" HorizontalTextAlignment ="Center" VerticalOptions="Center" FontAttributes="Bold" />
-                <Button Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="Menu" Command="{Binding GoToMenuCommand}" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="150" HeightRequest="50"/>
-                <Label Grid.Row="1" Grid.Column="0" Text="Available Funds:" Grid.ColumnSpan="2" HorizontalTextAlignment="End" VerticalTextAlignment="End" HeightRequest="50"/>
-                <Label Grid.Row="1" Grid.Column="2" Text="{Binding AvailableFunds, StringFormat='{0:C}'}" HorizontalTextAlignment="End" VerticalTextAlignment="End" HeightRequest="50"/>
-                <Button Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="Update Available Funds" Command="{Binding UpdateFundsCommand}" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="200" HeightRequest="50"/>
+                <Button Grid.Row="0" Grid.Column="4" Grid.ColumnSpan="2" Text="Menu" Command="{Binding GoToMenuCommand}" HorizontalOptions="Start" VerticalOptions="Center" WidthRequest="150" HeightRequest="50" FontSize="16"/>
+                <Label Grid.Row="1" Grid.Column="0" Text="Available Funds:" Grid.ColumnSpan="2" HorizontalTextAlignment="End" VerticalTextAlignment="End" HeightRequest="50" FontSize="16"/>
+                <Label Grid.Row="1" Grid.Column="2" Text="{Binding AvailableFunds, StringFormat='{0:C}'}" HorizontalTextAlignment="End" VerticalTextAlignment="End" HeightRequest="50" FontSize="16"/>
+                <Button Grid.Row="0" Grid.Column="2" Grid.ColumnSpan="2" Text="Update Available Funds" Command="{Binding UpdateFundsCommand}" IsEnabled="{Binding UpdateFundsButtonIsEnabled}" HorizontalOptions="Center" VerticalOptions="Center" WidthRequest="200" HeightRequest="50" FontSize="15"/>
                 <Label Grid.Row="2" Grid.Column="0" Grid.ColumnSpan="2" Text="Estimated End of Month Balance:" HorizontalTextAlignment="End" VerticalTextAlignment="Center" HeightRequest="30"/>
-                <Label Grid.Row="2" Grid.Column="2" Text="{Binding ProjectedFunds, StringFormat='{0:C}'}" HorizontalTextAlignment="End" VerticalTextAlignment="Center" HeightRequest="50"/>
+                <Label Grid.Row="2" Grid.Column="2" Text="{Binding ProjectedFunds, StringFormat='{0:C}'}" HorizontalTextAlignment="End" VerticalTextAlignment="Center" HeightRequest="50" FontSize="16"/>
                 <Label Grid.Column="0" Grid.Row="3" Text="Day Due" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
             <Label Grid.Column="1" Grid.Row="3" Text="Company/Payee/Payer" HorizontalTextAlignment="End" VerticalOptions="Center"/>
             <Label Grid.Column="2" Grid.Row="3" Text="Budgeted" HorizontalTextAlignment="End" VerticalOptions="Center"/>
@@ -33,24 +33,32 @@
             </CollectionView.EmptyView>
             <CollectionView.ItemTemplate>
                 <DataTemplate x:DataType="models:Payment">
-                    <Grid>
-                        <!--Frame HeightRequest="50" Padding="0"-->
-                            <Border Stroke="Gray" Background="Black" HeightRequest="50" Padding="0">
-                            <Border.GestureRecognizers>
-                                <TapGestureRecognizer CommandParameter="{Binding .}"
+                        <Grid>
+                            <Border Stroke="Gray" HeightRequest="50" Padding="0">
+                                <Border.Style>
+                                    <Style TargetType="Border">
+                                        <Setter Property="BackgroundColor" Value="Black"/>
+                                        <Style.Triggers>
+                                            <DataTrigger TargetType="Border" Binding="{Binding IsPaid}" Value="True">
+                                                <Setter Property="BackgroundColor" Value="DarkGreen"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Border.GestureRecognizers>
+                                    <TapGestureRecognizer CommandParameter="{Binding .}"
                                                       Command="{Binding Source={RelativeSource AncestorType={x:Type viewmodel:MonthViewModel}}, Path=GoToDetailsCommand}"/>
-                            </Border.GestureRecognizers>
-                            <Grid ColumnDefinitions="60, 150, 100, 100, 100, *" ColumnSpacing="10" Padding="0" HeightRequest="50">
-                                <Label Grid.Column="0" Text="{Binding DayOfMonthDue}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
-                                <Label Grid.Column="1" Text="{Binding Description}" HorizontalTextAlignment="End" VerticalOptions="Center"/>
+                                </Border.GestureRecognizers>
+                                <Grid ColumnDefinitions="60, 150, 100, 100, 100, *" ColumnSpacing="10" Padding="0" HeightRequest="50">
+                                    <Label Grid.Column="0" Text="{Binding DayOfMonthDue}" HorizontalTextAlignment="Center" VerticalOptions="Center"/>
+                                    <Label Grid.Column="1" Text="{Binding Description}" HorizontalTextAlignment="End" VerticalOptions="Center"/>
                                     <Label Grid.Column="2" Text="{Binding AmountEstimated, StringFormat='{0:C}'}" HorizontalTextAlignment="End" VerticalOptions="Center"/>
                                     <Label Grid.Column="3" Text="{Binding AmountActual, StringFormat='{0:C}'}" HorizontalTextAlignment="End" VerticalOptions="Center"/>
                                     <Label Grid.Column="4" Text="{Binding Type}" HorizontalTextAlignment="Start" VerticalOptions="Center" />
                                     <Label Grid.Column="5" Text="{Binding Comments}" HorizontalTextAlignment="Start" VerticalOptions="Center"/>
-                            </Grid>
+                                </Grid>
                             </Border>
-                            <!--/Frame-->
-                    </Grid>
+                        </Grid>
                 </DataTemplate>
             </CollectionView.ItemTemplate>
         </CollectionView>

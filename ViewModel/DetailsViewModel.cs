@@ -23,8 +23,8 @@ namespace Budget_App_MAUI.ViewModel
     //Need month to be set first so the Payment can be created with the correct month if a new Payment is being added
     [QueryProperty(nameof(MonthQuery), "month")]
     [QueryProperty(nameof(IdQuery), "payId")]
-    
-    public partial class DetailsViewModel:ObservableObject // BaseViewModel
+
+    public partial class DetailsViewModel : BaseViewModel
     {
         public PaymentDataContext _dataContext;
         public List<PaymentType> PaymentTypes { get; set; } //For the PaymentType Picker control
@@ -32,7 +32,7 @@ namespace Budget_App_MAUI.ViewModel
         public List<int> DaysInMonth { get; } //For the DayOfMonthDue Picker control
         public DetailsViewModel(PaymentDataContext dataContext)
         {
-            //Title = "Payment Details";
+            Title = "Payment Details";
             _dataContext = dataContext;
             //for the picker control need to create a list of the enum values
             PaymentTypes = Enum.GetValues(typeof(PaymentType)).Cast<PaymentType>().ToList();
@@ -47,13 +47,22 @@ namespace Budget_App_MAUI.ViewModel
                     Enum.IsDefined(typeof(PaymentMonth), monthValue))
                 {
                     SelectedMonth = (PaymentMonth)monthValue;
+                    if (SelectedMonth == PaymentMonth.TEMPLATE)
+                        IsMonthlyEdit = false;
+                    else
+                        IsMonthlyEdit = true;
                 }
             }
         }
 
         [ObservableProperty]
+        bool canDelete;
+        [ObservableProperty] //obserbable for options in the DetailsPage
+        bool isMonthlyEdit;
+        [ObservableProperty]
         private Payment payment;
         private Payment originalPaymentHolder; //to hold original payment details in case of cancel
+
 
         public string IdQuery
         {
@@ -66,31 +75,20 @@ namespace Budget_App_MAUI.ViewModel
                     if (existingPayment != null)
                     {
                         Payment = existingPayment;
-                        //originalPaymentHolder = new Payment
-                        //{
-                        //    Id = Payment.Id,
-                        //    Type = Payment.Type,
-                        //    DayOfMonthDue = Payment.DayOfMonthDue,
-                        //    Month = Payment.Month,
-                        //    Year = Payment.Year,
-                        //    Description = Payment.Description,
-                        //    Category = Payment.Category,
-                        //    Comments = Payment.Comments,
-                        //    IsPaid = Payment.IsPaid,
-                        //    AmountEstimated = Payment.AmountEstimated,
-                        //    AmountActual = Payment.AmountActual
-                        //};
+                        CanDelete = true; //enable delete button and IsPaid functions for existing payments
                     }
                     else //create a new Payment with the SelectedMonth
                     {
                         int year;
-                        if (SelectedMonth == PaymentMonth.TEMPLATE)
+                        if(!IsMonthlyEdit) //means it's a template edit
                             year = 0000; //template payments have year 0000
                         else
                             year = DateTime.Now.Year; //current year for new payments
-                        Payment = new Payment(Guid.NewGuid(), SelectedMonth, year);
-                        //Do not add the new Payment to the db until the user adds details and saves
 
+                        Payment = new Payment(Guid.NewGuid(), SelectedMonth, year);
+                        CanDelete = false; //disable delete button and IsPaid functions for new payments
+
+                        //We do not Save to db until the user adds details and saves in case they cancel
                     }
                 }
                 else
@@ -100,14 +98,14 @@ namespace Budget_App_MAUI.ViewModel
                 }
             }
         }
-        
+
         [RelayCommand]
         async Task CancelEditAsync()
         {
             //return to previous page by clearing the navigation stack and using absolute route
             //reset the Payment to original values if user made changes and then cancelled
             await _dataContext.Entry(Payment).ReloadAsync(); //reload from db to discard changes           
-            await Shell.Current.GoToAsync("//MenuPage/MainPage");            
+            await Shell.Current.GoToAsync("//MenuPage/MainPage");
         }
         [RelayCommand]
         async Task SaveAsync()
@@ -124,16 +122,37 @@ namespace Budget_App_MAUI.ViewModel
                 await _dataContext.SaveChangesAsync(); //commits changes to db
                 //Message the MonthViewModel to refresh the list
                 WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(Payment.Month));
-                
+
                 //return to previous page by clearing the navigation stack and using absolute route
                 await Shell.Current.GoToAsync($"//MenuPage/MainPage?month={Payment.Month}");
 
             }
             catch (Exception ex)
             {
-                await Shell.Current.DisplayAlert("Error Saving Transaction, Check All Fields", ex.Message, "OK");
+                await Shell.Current.DisplayAlert("Error Saving Transaction", ex.Message, "OK");
             }
         }
+        [RelayCommand]
+        async Task DeleteAsync()
+        {
+            bool confirmDelete = await Shell.Current.DisplayAlert("Confirm Delete", "Are you sure you want to delete this payment?", "Yes", "No");
+            if (confirmDelete)
+            {
+                try
+                {
+                    _dataContext.Payments.Remove(Payment);
+                    await _dataContext.SaveChangesAsync(); //commits changes to db
+                    //Message the MonthViewModel to refresh the list
+                    WeakReferenceMessenger.Default.Send(new TransactionUpdatedMessage(Payment.Month));
+                    //return to previous page by clearing the navigation stack and using absolute route
+                    await Shell.Current.GoToAsync($"//MenuPage/MainPage?month={Payment.Month}");
+                }
+                catch (Exception ex)
+                {
+                    await Shell.Current.DisplayAlert("Error Deleting Payment", ex.Message, "OK");
+                }
+            }
 
+        }
     }
 }
